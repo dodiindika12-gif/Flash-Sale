@@ -8,385 +8,659 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,700;0,900;1,800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Poppins', sans-serif; }
-        .text-outline {
+        
+        .display-mode .text-outline {
             text-shadow: 2px 2px 0 #0056b3, -2px -2px 0 #0056b3, 2px -2px 0 #0056b3, -2px 2px 0 #0056b3, 4px 4px 10px rgba(0,0,0,0.5);
         }
-        .neon-glow {
+        .display-mode .neon-glow {
             box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.7), inset 0 0 10px rgba(255,255,255,0.5);
         }
-        .neon-glow-blue {
+        .display-mode .neon-glow-blue {
             box-shadow: 0 0 15px 5px rgba(59, 130, 246, 0.5), inset 0 0 10px rgba(255,255,255,0.5);
         }
+        /* Loader CSS */
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle;}
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="bg-gradient-to-b from-blue-400 to-blue-600 h-screen w-full flex flex-col p-3 md:p-4 text-white overflow-hidden">
+<body class="bg-white">
 
-    <!-- HEADER (Kunci agar tidak menyusut) -->
-    <header class="text-center relative mb-3 mt-1 shrink-0">
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black italic tracking-wider text-white text-outline mb-2">
-            FLASH SALE <span class="bg-red-600 text-yellow-300 px-3 rounded-xl shadow-lg border-2 border-white inline-block transform -skew-x-12">HARI INI</span>
-        </h1>
-        <div class="bg-pink-500 text-white font-bold text-xs md:text-base lg:text-xl py-1 px-6 rounded-full inline-block shadow-md transform -skew-x-12 border-2 border-white">
-            <span class="transform skew-x-12 inline-block">Belanja sekarang sebelum waktunya habis!</span>
+    <!-- PANEL ADMIN -->
+    <div id="admin-panel" class="hidden min-h-screen bg-gray-50 text-gray-800 p-4 md:p-8">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-blue-700">Manajemen Jadwal Promo</h1>
+                    <p class="text-sm text-gray-500 mt-1">Data tersambung langsung ke Google Sheets.</p>
+                </div>
+                <button onclick="goToDisplay()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow transition">
+                    ▶ Lihat Layar TV
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Form Tambah/Edit -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 lg:col-span-1 h-max">
+                    <h2 class="text-xl font-bold mb-4 border-b pb-2">Tambah Jadwal Baru</h2>
+                    <form id="promo-form" class="space-y-4">
+                        
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Kategori Promo</label>
+                            <select id="kategori" onchange="toggleTimeFields()" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 border p-2 bg-gray-50">
+                                <option value="Flash Sale">⚡ Flash Sale (Jam Tertentu)</option>
+                                <option value="Reguler">📅 Reguler (Sepanjang Hari)</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Tgl Mulai</label>
+                                <input type="date" id="tgl-mulai" required class="w-full border-gray-300 rounded-lg shadow-sm border p-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Tgl Berakhir</label>
+                                <input type="date" id="tgl-berakhir" required class="w-full border-gray-300 rounded-lg shadow-sm border p-2">
+                            </div>
+                        </div>
+
+                        <div id="time-fields" class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Jam Mulai</label>
+                                <input type="time" id="jam-mulai" value="00:00" class="w-full border-gray-300 rounded-lg shadow-sm border p-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Jam Berakhir</label>
+                                <input type="time" id="jam-berakhir" value="23:59" class="w-full border-gray-300 rounded-lg shadow-sm border p-2">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Nama Brand</label>
+                            <input type="text" id="brand" placeholder="Cth: Skintific" required class="w-full border-gray-300 rounded-lg shadow-sm border p-2">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Diskon (%)</label>
+                                <input type="number" id="diskon" placeholder="35" required class="w-full border-gray-300 rounded-lg shadow-sm border p-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Cakupan</label>
+                                <select id="cakupan" class="w-full border-gray-300 rounded-lg shadow-sm border p-2 text-sm">
+                                    <option value="Semua Produk">Semua Produk</option>
+                                    <option value="Produk Pilihan">Produk Pilihan</option>
+                                    <option value="Diskon">Hanya Diskon</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">URL Logo Brand (Opsional)</label>
+                            <input type="url" id="logo-url" placeholder="https://..." class="w-full border-gray-300 rounded-lg shadow-sm border p-2">
+                        </div>
+
+                        <button id="btn-submit" type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow transition mt-2 flex items-center justify-center gap-2">
+                            <span>💾 Simpan Jadwal</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Tabel Data -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 lg:col-span-2 overflow-x-auto">
+                    <h2 class="text-xl font-bold mb-4 border-b pb-2 flex justify-between items-center">
+                        Daftar Jadwal (Dari Google Sheets)
+                        <button onclick="loadDataFromSheet()" class="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold py-1 px-3 rounded flex items-center gap-1"><span id="sync-icon">🔄</span> Refresh</button>
+                    </h2>
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                            <tr>
+                                <th class="px-4 py-3 rounded-tl-lg">Brand</th>
+                                <th class="px-4 py-3">Kategori</th>
+                                <th class="px-4 py-3">Periode Waktu</th>
+                                <th class="px-4 py-3">Promo</th>
+                                <th class="px-4 py-3 rounded-tr-lg">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body" class="divide-y divide-gray-200">
+                            <tr><td colspan="5" class="px-4 py-8 text-center text-gray-500">Memuat data dari Google Sheets... <div class="loader ml-2"></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </header>
+    </div>
 
-    <!-- MAIN CONTENT (DIKUNCI FLEX-ROW AGAR SELALU KIRI-KANAN DI TV) -->
-    <main class="flex-1 flex flex-row gap-4 px-2 md:px-6 min-h-0">
+
+    <!-- PANEL DISPLAY (TV) -->
+    <div id="display-panel" class="hidden display-mode bg-gradient-to-b from-blue-400 to-blue-600 h-screen w-full flex flex-col p-2 md:p-4 text-white overflow-hidden relative">
         
-        <!-- LEFT PANEL (FOKUS UTAMA) - Diberi porsi lebar lebih besar (w-2/3) -->
-        <div id="left-panel-bg" class="w-[65%] bg-gradient-to-br from-red-500 to-pink-600 rounded-[2rem] p-4 md:p-5 border-4 border-yellow-400 neon-glow relative flex flex-col justify-between transition-colors duration-500 min-h-0">
-            <div id="left-panel-badge" class="absolute -top-3 left-6 bg-yellow-400 text-red-700 font-bold px-4 py-1 rounded-full text-[10px] md:text-sm lg:text-base shadow-lg transition-colors z-10">
-                ⚡ SEDANG BERLANGSUNG
-            </div>
-            
-            <!-- WRAPPER JAM & BRAND (DIKUNCI FLEX-ROW AGAR BERSEBELAHAN, TIDAK MENUMPUK KE BAWAH) -->
-            <div class="flex flex-row justify-between items-center mt-3 gap-3 flex-1 min-h-0">
-                
-                <!-- JAM -->
-                <div class="w-[35%] flex flex-col justify-center items-start text-left shrink-0">
-                    <h2 id="left-time" class="text-3xl md:text-4xl lg:text-5xl font-black text-yellow-300 drop-shadow-md">00:00 - 00:00</h2>
-                    <p class="text-[10px] md:text-sm lg:text-lg mt-1 font-bold flex items-center justify-start gap-1">
-                        <span>🕒</span> WAKTU TERBATAS
-                    </p>
-                    <p class="text-sm md:text-lg lg:text-2xl font-black italic mt-2 leading-tight">
-                        Jangan sampai<br><span class="text-yellow-300">kelewatan!</span>
-                    </p>
-                </div>
-                
-                <!-- BRAND SLOT WRAPPER (Menyusut otomatis) -->
-                <div class="flex flex-row gap-2 md:gap-3 text-center w-[65%] items-stretch justify-center h-full min-h-0">
-                    
-                    <!-- SLOT 1: SKINTIFIC -->
-                    <div id="left-brands-1" class="hidden w-full flex-1 bg-white/20 p-2 md:p-4 rounded-xl border border-white/40 backdrop-blur-sm flex flex-col items-center justify-center min-h-0">
-                        <div class="bg-white text-black font-bold px-3 py-1 rounded-full mb-1 text-sm md:text-xl lg:text-2xl w-max">SKINTIFIC</div>
-                        <div class="text-yellow-300 font-black text-2xl md:text-4xl lg:text-5xl drop-shadow-md leading-none">35%<span class="text-[9px] md:text-xs block text-white mt-1 uppercase tracking-widest leading-tight">Diskon Semua Produk</span></div>
-                    </div>
+        <!-- Tombol Rahasia ke Admin -->
+        <button onclick="goToAdmin()" class="absolute bottom-2 right-2 opacity-0 hover:opacity-100 bg-black/50 p-2 rounded-full z-50 text-white transition-opacity cursor-pointer">⚙️</button>
 
-                    <!-- SLOT 2: L'OREAL & GARNIER -->
-                    <div id="left-brands-2" class="hidden w-full flex flex-row gap-2 md:gap-3 min-h-0">
-                        <div class="bg-white/20 p-2 md:p-3 rounded-xl border border-white/40 backdrop-blur-sm flex-1 flex flex-col justify-center items-center min-h-0">
-                            <div class="bg-white text-black font-bold px-2 py-0.5 rounded mb-1 text-[10px] md:text-sm w-max">L'ORÉAL</div>
-                            <div class="text-yellow-300 font-black text-xl md:text-3xl drop-shadow-md leading-none">35%<span class="text-[8px] md:text-[10px] block text-white mt-1">DISKON</span></div>
-                        </div>
-                        <div class="bg-white/20 p-2 md:p-3 rounded-xl border border-white/40 backdrop-blur-sm flex-1 flex flex-col justify-center items-center min-h-0">
-                            <div class="bg-white text-green-600 font-bold px-2 py-0.5 rounded mb-1 text-[10px] md:text-sm w-max">GARNIER</div>
-                            <div class="text-yellow-300 font-black text-xl md:text-3xl drop-shadow-md leading-none">35%<span class="text-[8px] md:text-[10px] block text-white mt-1">DISKON</span></div>
-                        </div>
-                    </div>
-
-                    <!-- SLOT 3: MAYBELLINE & GLAD2GLOW -->
-                    <div id="left-brands-3" class="hidden w-full flex flex-row gap-2 md:gap-3 min-h-0">
-                        <div class="bg-white/20 p-2 md:p-3 rounded-xl border border-white/40 backdrop-blur-sm flex-1 flex flex-col justify-center items-center min-h-0">
-                            <div class="bg-white text-black font-bold px-2 py-0.5 rounded mb-1 text-[9px] md:text-xs w-max leading-tight">MAYBELLINE<br><span class="text-[7px] md:text-[9px] font-normal">NEW YORK</span></div>
-                            <div class="text-yellow-300 font-black text-xl md:text-3xl drop-shadow-md leading-none">35%<span class="text-[8px] md:text-[10px] block text-white mt-1">DISKON</span></div>
-                        </div>
-                        <div class="bg-white/20 p-2 md:p-3 rounded-xl border border-white/40 backdrop-blur-sm flex-1 flex flex-col justify-center items-center min-h-0">
-                            <div class="bg-white text-purple-600 font-bold px-2 py-0.5 rounded mb-1 text-[10px] md:text-sm w-max">Glad2Glow</div>
-                            <div class="text-yellow-300 font-black text-xl md:text-3xl drop-shadow-md leading-none">35%<span class="text-[8px] md:text-[10px] block text-white mt-1">DISKON</span></div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- COUNTDOWN TIMER (Ukurannya dirapikan agar proporsional) -->
-            <div id="countdown-container" class="mt-3 shrink-0 bg-gradient-to-r from-yellow-300 to-yellow-500 text-red-700 rounded-xl md:rounded-full py-1.5 px-4 text-center border-2 md:border-4 border-white shadow-lg w-full transition-colors mx-auto">
-                <p id="timer-label" class="font-bold text-[9px] md:text-[11px] lg:text-xs mb-0.5 uppercase tracking-wider leading-none">Promo Berakhir Dalam:</p>
-                <div class="flex justify-center items-center gap-2 md:gap-4 text-2xl md:text-3xl lg:text-4xl font-black leading-none">
-                    <div class="w-12 md:w-16"><span id="hours">00</span><span class="text-[9px] md:text-xs block font-bold mt-0.5">JAM</span></div>
-                    <div class="pb-2 md:pb-3 text-lg md:text-2xl">:</div>
-                    <div class="w-12 md:w-16"><span id="minutes">00</span><span class="text-[9px] md:text-xs block font-bold mt-0.5">MENIT</span></div>
-                    <div class="pb-2 md:pb-3 text-lg md:text-2xl">:</div>
-                    <div class="w-12 md:w-16"><span id="seconds">00</span><span class="text-[9px] md:text-xs block font-bold mt-0.5">DETIK</span></div>
-                </div>
-            </div>
+        <!-- Loader overlay for initial TV load -->
+        <div id="tv-loader" class="absolute inset-0 bg-blue-600 z-50 flex flex-col items-center justify-center transition-opacity duration-500">
+            <div class="loader mb-4 w-12 h-12 border-4 border-t-white border-blue-400"></div>
+            <p class="font-bold tracking-widest animate-pulse">Menghubungkan ke Google Sheets...</p>
         </div>
 
-        <!-- RIGHT PANEL (SELANJUTNYA) - Lebar sisa 35% -->
-        <div class="w-[35%] bg-blue-50 text-blue-900 rounded-[2rem] p-3 md:p-4 shadow-xl flex flex-col border-4 border-blue-200 min-h-0">
-            <div class="bg-blue-600 text-white font-bold py-1 px-4 rounded-full text-center text-[10px] md:text-sm lg:text-base shadow-inner mb-2 shrink-0">
-                🕒 SELANJUTNYA
+        <header class="text-center relative mb-4 mt-2 shrink-0">
+            <h1 class="text-4xl md:text-5xl lg:text-7xl font-black italic tracking-wider text-white text-outline mb-2">
+                FLASH SALE <span class="bg-red-600 text-yellow-300 px-3 md:px-4 rounded-xl shadow-lg border-2 border-white inline-block transform -skew-x-12">HARI INI</span>
+            </h1>
+            <div class="bg-pink-500 text-white font-bold text-sm md:text-lg lg:text-2xl py-1 px-4 md:px-8 rounded-full inline-block shadow-md transform -skew-x-12 border-2 border-white">
+                <span class="transform skew-x-12 inline-block">Belanja sekarang sebelum waktunya habis!</span>
             </div>
-            <h3 id="right-time" class="text-lg md:text-xl lg:text-3xl font-black text-center text-blue-800 mb-2 shrink-0">--:--</h3>
-            
-            <div class="space-y-2 flex-1 flex flex-col justify-center min-h-0">
+        </header>
+
+        <main class="flex-1 flex flex-col md:flex-row gap-4 md:gap-6 px-2 md:px-10 min-h-0">
+            <!-- PANEL KIRI -->
+            <div id="left-panel-bg" class="flex-[1.8] lg:flex-[2] bg-gradient-to-br from-red-500 to-pink-600 rounded-[2rem] p-4 md:p-6 border-4 border-yellow-400 neon-glow relative flex flex-col justify-between transition-colors duration-500 h-full">
+                <div id="left-panel-badge" class="absolute -top-4 left-6 bg-yellow-400 text-red-700 font-bold px-4 py-1 rounded-full text-xs md:text-sm lg:text-lg shadow-lg transition-colors">
+                    <span id="badge-status">⚡ SEDANG BERLANGSUNG</span>
+                </div>
                 
-                <!-- NEXT SLOT 1: SKINTIFIC -->
-                <div id="right-brands-1" class="hidden w-full h-full">
-                    <div class="bg-white border-2 border-blue-100 rounded-xl p-2 flex justify-between items-center shadow-sm w-full h-full min-h-0">
-                        <div class="font-bold text-sm md:text-base lg:text-xl text-black">SKINTIFIC</div>
-                        <div class="bg-blue-600 text-white text-center py-1 px-2 rounded-lg shrink-0">
-                            <div class="text-[7px] md:text-[9px] leading-none mb-0.5">SEMUA PRODUK</div>
-                            <div class="font-black text-sm md:text-lg">35%</div>
-                        </div>
+                <div class="flex flex-col xl:flex-row justify-between items-stretch mt-8 gap-4 flex-1 min-h-0">
+                    <div class="xl:w-[23%] flex flex-col justify-center shrink-0">
+                        <h2 id="badge-time" class="text-3xl md:text-5xl lg:text-6xl font-black text-yellow-300 drop-shadow-md leading-none">--:--</h2>
+                        <p id="badge-time-label" class="text-xs md:text-sm lg:text-xl mt-3 font-bold flex items-center gap-2">🕒 WAKTU TERBATAS</p>
+                        <p id="badge-tagline" class="text-lg md:text-2xl lg:text-4xl font-black italic mt-5 leading-tight">Jangan sampai<br><span class="text-yellow-300">kelewatan!</span></p>
                     </div>
+                    <!-- KOTAK BRAND KIRI -->
+                    <div id="left-brands-container" class="flex flex-col sm:flex-row gap-4 text-center w-full justify-end items-stretch h-full flex-1 min-h-0"></div>
                 </div>
 
-                <!-- NEXT SLOT 2: L'OREAL & GARNIER -->
-                <div id="right-brands-2" class="hidden flex-col gap-2 w-full h-full">
-                    <div class="bg-white border-2 border-blue-100 rounded-xl p-2 flex justify-between items-center shadow-sm flex-1 min-h-0">
-                        <div class="font-bold text-xs md:text-sm lg:text-lg tracking-widest text-black">L'ORÉAL</div>
-                        <div class="bg-blue-600 text-white text-center py-1 px-2 rounded-lg shrink-0">
-                            <div class="text-[7px] md:text-[9px] leading-none">DISKON</div>
-                            <div class="font-black text-sm md:text-lg">35%</div>
-                        </div>
+                <!-- COUNTDOWN TIMER -->
+                <div id="countdown-container" class="mt-4 shrink-0 bg-gradient-to-r from-yellow-300 to-yellow-500 text-red-700 rounded-2xl md:rounded-full py-2 px-4 md:px-8 border-4 border-white shadow-[0_4px_15px_rgba(0,0,0,0.3)] w-full transition-colors hidden">
+                    <p id="timer-label" class="font-bold text-[10px] md:text-xs lg:text-sm mb-1 uppercase tracking-wider text-center">Promo Berakhir Dalam:</p>
+                    <div class="flex justify-center items-center gap-2 md:gap-4 text-2xl md:text-4xl lg:text-5xl font-black">
+                        <div class="w-12 md:w-16 lg:w-20"><span id="hours">00</span><span class="text-xs md:text-sm lg:text-xl block font-bold">JAM</span></div>
+                        <div class="pb-3 md:pb-6">:</div>
+                        <div class="w-12 md:w-16 lg:w-20"><span id="minutes">00</span><span class="text-xs md:text-sm lg:text-xl block font-bold">MENIT</span></div>
+                        <div class="pb-3 md:pb-6">:</div>
+                        <div class="w-12 md:w-16 lg:w-20"><span id="seconds">00</span><span class="text-xs md:text-sm lg:text-xl block font-bold">DETIK</span></div>
                     </div>
-                    <div class="bg-white border-2 border-blue-100 rounded-xl p-2 flex justify-between items-center shadow-sm flex-1 min-h-0">
-                        <div class="font-bold text-xs md:text-sm lg:text-lg text-green-600">GARNIER</div>
-                        <div class="bg-blue-600 text-white text-center py-1 px-2 rounded-lg shrink-0">
-                            <div class="text-[7px] md:text-[9px] leading-none">DISKON</div>
-                            <div class="font-black text-sm md:text-lg">35%</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- NEXT SLOT 3: MAYBELLINE & GLAD2GLOW -->
-                <div id="right-brands-3" class="hidden flex-col gap-2 w-full h-full">
-                    <div class="bg-white border-2 border-blue-100 rounded-xl p-2 flex justify-between items-center shadow-sm flex-1 min-h-0">
-                        <div class="font-bold text-[10px] md:text-xs lg:text-base tracking-widest text-black leading-tight">MAYBELLINE<br><span class="text-[7px] md:text-[8px] font-normal text-gray-500">NEW YORK</span></div>
-                        <div class="bg-blue-600 text-white text-center py-1 px-2 rounded-lg shrink-0">
-                            <div class="text-[7px] md:text-[9px] leading-none">DISKON</div>
-                            <div class="font-black text-sm md:text-lg">35%</div>
-                        </div>
-                    </div>
-                    <div class="bg-white border-2 border-blue-100 rounded-xl p-2 flex justify-between items-center shadow-sm flex-1 min-h-0">
-                        <div class="font-bold text-xs md:text-sm lg:text-lg text-purple-600">Glad2Glow</div>
-                        <div class="bg-blue-600 text-white text-center py-1 px-2 rounded-lg shrink-0">
-                            <div class="text-[7px] md:text-[9px] leading-none">DISKON</div>
-                            <div class="font-black text-sm md:text-lg">35%</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            
-            <div class="text-center text-blue-600 font-bold text-[8px] md:text-[10px] lg:text-xs mt-2 shrink-0">
-                ⚡ Siapkan keranjangmu sekarang!
-            </div>
-        </div>
-    </main>
-
-    <!-- BOTTOM TIMELINE -->
-    <footer class="mt-3 mb-1 px-2 md:px-6 shrink-0">
-        <div class="bg-blue-50/90 backdrop-blur rounded-xl md:rounded-2xl p-2 flex flex-row items-center gap-2 relative shadow-lg">
-            
-            <!-- Label -->
-            <div class="absolute -top-2 left-6 bg-blue-600 text-white font-bold px-3 py-0.5 rounded-full text-[8px] md:text-[10px] shadow-md z-10">
-                📅 JADWAL HARI INI
-            </div>
-
-            <!-- Step 1 -->
-            <div id="timeline-step-1" class="flex-1 bg-white rounded-lg md:rounded-xl p-1.5 md:p-2.5 flex items-center justify-between shadow-sm transition-all duration-500">
-                <div id="timeline-badge-1" class="hidden absolute -top-2 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-[7px] md:text-[9px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shadow-md z-10"></div>
-                <div class="flex items-center gap-1.5">
-                    <div id="timeline-circle-1" class="bg-blue-600 text-white w-4 h-4 md:w-6 md:h-6 rounded-full flex items-center justify-center font-bold text-[9px] md:text-xs transition-colors shrink-0">1</div>
-                    <div>
-                        <div class="text-blue-800 font-bold text-[8px] md:text-[10px] leading-none">🕒 10:00 - 12:00</div>
-                        <div class="font-black text-[9px] md:text-sm mt-0.5 text-black leading-none">SKINTIFIC</div>
-                    </div>
-                </div>
-                <div class="text-center shrink-0">
-                    <div class="text-[7px] md:text-[9px] text-blue-600 font-bold leading-none">DISKON</div>
-                    <div class="text-xs md:text-lg font-black text-blue-600 leading-tight">35%</div>
                 </div>
             </div>
 
-            <div class="text-blue-400 font-bold text-xs md:text-sm opacity-50">••</div>
-
-            <!-- Step 2 -->
-            <div id="timeline-step-2" class="flex-1 bg-white rounded-lg md:rounded-xl p-1.5 md:p-2.5 flex items-center justify-between shadow-sm relative transition-all duration-500">
-                <div id="timeline-badge-2" class="hidden absolute -top-2 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-[7px] md:text-[9px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shadow-md z-10"></div>
-                <div class="flex items-center gap-1.5">
-                    <div id="timeline-circle-2" class="bg-blue-600 text-white w-4 h-4 md:w-6 md:h-6 rounded-full flex items-center justify-center font-bold text-[9px] md:text-xs transition-colors shrink-0">2</div>
-                    <div>
-                        <div class="text-blue-800 font-bold text-[8px] md:text-[10px] leading-none">🕒 15:00 - 17:00</div>
-                        <div class="font-black text-[8px] md:text-xs mt-0.5 text-black leading-none">L'ORÉAL & GARNIER</div>
-                    </div>
+            <!-- PANEL KANAN -->
+            <div class="w-full md:w-1/3 lg:w-1/3 bg-blue-50 text-blue-900 rounded-[2rem] p-4 shadow-xl flex flex-col border-4 border-blue-200 h-full overflow-hidden">
+                <div class="bg-blue-600 text-white font-bold py-1 px-4 md:px-6 rounded-full text-center text-xs md:text-sm lg:text-xl shadow-inner mb-3 shrink-0">
+                    🕒 SELANJUTNYA
                 </div>
-                <div class="text-center shrink-0">
-                    <div class="text-[7px] md:text-[9px] text-blue-600 font-bold leading-none">DISKON</div>
-                    <div class="text-xs md:text-lg font-black text-blue-600 leading-tight">35%</div>
-                </div>
+                <h3 id="right-time" class="text-xl md:text-3xl lg:text-4xl font-black text-center text-blue-800 mb-3 md:mb-4 shrink-0">--:--</h3>
+                <div id="right-brands-container" class="space-y-4 flex-1 flex flex-col justify-center min-h-0"></div>
+                <div class="text-center text-blue-600 font-bold text-[10px] md:text-xs lg:text-sm mt-3 shrink-0">⚡ Siapkan keranjangmu sekarang!</div>
             </div>
+        </main>
 
-            <div class="text-blue-400 font-bold text-xs md:text-sm opacity-50">••</div>
-
-            <!-- Step 3 -->
-            <div id="timeline-step-3" class="flex-1 bg-white rounded-lg md:rounded-xl p-1.5 md:p-2.5 flex items-center justify-between shadow-sm relative transition-all duration-500">
-                <div id="timeline-badge-3" class="hidden absolute -top-2 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-[7px] md:text-[9px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shadow-md z-10"></div>
-                <div class="flex items-center gap-1.5">
-                    <div id="timeline-circle-3" class="bg-blue-600 text-white w-4 h-4 md:w-6 md:h-6 rounded-full flex items-center justify-center font-bold text-[9px] md:text-xs transition-colors shrink-0">3</div>
-                    <div>
-                        <div class="text-blue-800 font-bold text-[8px] md:text-[10px] leading-none">🕒 19:00 - 21:00</div>
-                        <div class="font-black text-[8px] md:text-xs mt-0.5 text-black leading-none">MAYBELLINE<br><span class="text-purple-500">Glad2Glow</span></div>
-                    </div>
-                </div>
-                <div class="text-center shrink-0">
-                    <div class="text-[7px] md:text-[9px] text-blue-600 font-bold leading-none">DISKON</div>
-                    <div class="text-xs md:text-lg font-black text-blue-600 leading-tight">35%</div>
-                </div>
+        <footer class="mt-4 mb-2 px-2 md:px-10 shrink-0">
+            <div id="timeline-container" class="bg-blue-50/90 backdrop-blur rounded-2xl p-3 md:p-4 flex flex-row items-center gap-2 md:gap-4 relative shadow-lg">
+                <div class="hidden md:block absolute -top-3 left-6 bg-blue-600 text-white font-bold px-6 py-1 rounded-full text-xs shadow-md z-20">📅 JADWAL HARI INI</div>
             </div>
-            
-        </div>
-    </footer>
+        </footer>
+    </div>
 
-    <!-- SCRIPT LOGIKA WAKTU & COUNTDOWN -->
+
     <script>
-        // Definisi Jadwal Promo
-        const schedule = {
-            1: { start: 10, end: 12, timeStr: "10:00 - 12:00" },
-            2: { start: 15, end: 17, timeStr: "15:00 - 17:00" },
-            3: { start: 19, end: 21, timeStr: "19:00 - 21:00" }
-        };
+        // ==========================================
+        // URL WEB APP DARI GOOGLE APPS SCRIPT ANDA
+        // ==========================================
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxN9FMUvq0eV6AfUQcYz7PBbKM-mTJmeagrA5OO907OgtLxUg4H0sSC_wPB6_N2pwC3/exec'; 
+        
+        let schedules = [];
+        let displayIntervalId = null;
 
-        function updateDisplay() {
-            const now = new Date();
-            const hour = now.getHours();
+        // Inisialisasi Aplikasi 
+        function initApp() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isAdmin = urlParams.get('admin') === 'true';
+
+            if (isAdmin) {
+                document.getElementById('admin-panel').classList.remove('hidden');
+                document.getElementById('display-panel').classList.add('hidden');
+                document.body.className = "bg-gray-100";
+                
+                // Set default tanggal hari ini
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('tgl-mulai').value = today;
+                document.getElementById('tgl-berakhir').value = today;
+
+                loadDataFromSheet();
+            } else {
+                document.getElementById('display-panel').classList.remove('hidden');
+                document.getElementById('admin-panel').classList.add('hidden');
+                document.body.className = "bg-white"; 
+                
+                // TV Load Data pertama kali, lalu mulai loop
+                loadDataFromSheet().then(() => {
+                    document.getElementById('tv-loader').style.opacity = '0';
+                    setTimeout(() => document.getElementById('tv-loader').classList.add('hidden'), 500);
+                    
+                    updateDisplayEngine(); // panggil segera
+                    if(displayIntervalId) clearInterval(displayIntervalId);
+                    displayIntervalId = setInterval(updateDisplayEngine, 1000); // 1 detik hitung mundur
+                    
+                    // Fetch data baru dari Google Sheet tiap 1 menit untuk update tanpa refresh TV
+                    setInterval(loadDataFromSheet, 60000); 
+                });
+            }
+        }
+
+        function goToAdmin() { window.location.href = "?admin=true"; }
+        function goToDisplay() { window.location.href = "?"; }
+
+        // --- API GOOGLE SHEETS L0GIC ---
+
+        async function loadDataFromSheet() {
+            try {
+                const icon = document.getElementById('sync-icon');
+                if(icon) icon.classList.add('animate-spin');
+                
+                const response = await fetch(SCRIPT_URL);
+                const data = await response.json();
+                schedules = data;
+                
+                if (document.getElementById('admin-panel').classList.contains('hidden') === false) {
+                    renderTable();
+                }
+            } catch (error) {
+                console.error("Gagal mengambil data dari Google Sheets", error);
+                if(schedules.length === 0) alert("Koneksi gagal. Pastikan URL Web App Google Script sudah benar.");
+            } finally {
+                const icon = document.getElementById('sync-icon');
+                if(icon) icon.classList.remove('animate-spin');
+            }
+        }
+
+        document.getElementById('promo-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit');
+            btn.innerHTML = '<div class="loader"></div> Menyimpan...';
+            btn.disabled = true;
+
+            const newEntry = {
+                id: Date.now().toString(),
+                kategori: document.getElementById('kategori').value,
+                tglMulai: document.getElementById('tgl-mulai').value,
+                tglBerakhir: document.getElementById('tgl-berakhir').value,
+                jamMulai: document.getElementById('jam-mulai').value,
+                jamBerakhir: document.getElementById('jam-berakhir').value,
+                brand: document.getElementById('brand').value,
+                diskon: document.getElementById('diskon').value,
+                cakupan: document.getElementById('cakupan').value,
+                logoUrl: document.getElementById('logo-url').value
+            };
             
-            let activeSlot = 1;
-            let nextSlot = 2;
+            try {
+                await fetch(SCRIPT_URL + '?action=insert', {
+                    method: 'POST',
+                    body: JSON.stringify(newEntry),
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8",
+                    },
+                    redirect: "follow"
+                });
+                
+                this.reset();
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('tgl-mulai').value = today;
+                document.getElementById('tgl-berakhir').value = today;
+                
+                await loadDataFromSheet();
+                alert("Jadwal berhasil disimpan ke Google Sheets!");
+            } catch (error) {
+                alert("Gagal menyimpan data!");
+                console.error(error);
+            } finally {
+                btn.innerHTML = '<span>💾 Simpan Jadwal</span>';
+                btn.disabled = false;
+            }
+        });
+
+        async function deleteEntry(id) {
+            if(confirm("Hapus jadwal ini dari sistem?")) {
+                const btn = document.getElementById('btn-del-'+id);
+                btn.innerHTML = '⏳'; btn.disabled = true;
+                
+                try {
+                    await fetch(SCRIPT_URL + '?action=delete&id=' + id, { 
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "text/plain;charset=utf-8",
+                        },
+                        redirect: "follow"
+                    });
+                    await loadDataFromSheet();
+                } catch(e) {
+                    alert("Gagal menghapus data.");
+                    btn.innerHTML = 'Hapus'; btn.disabled = false;
+                }
+            }
+        }
+
+        function toggleTimeFields() {
+            const kategori = document.getElementById('kategori').value;
+            const timeFields = document.getElementById('time-fields');
+            if (kategori === 'Reguler') {
+                timeFields.classList.add('hidden');
+                document.getElementById('jam-mulai').value = '00:00';
+                document.getElementById('jam-berakhir').value = '23:59';
+            } else {
+                timeFields.classList.remove('hidden');
+            }
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+            
+            let sortedSchedules = [...schedules].sort((a, b) => {
+                if(a.tglMulai === b.tglMulai) return a.jamMulai.localeCompare(b.jamMulai);
+                return a.tglMulai.localeCompare(b.tglMulai);
+            });
+
+            if(sortedSchedules.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-gray-500">Belum ada data di Google Sheets. Silakan tambah data di atas.</td></tr>`;
+                return;
+            }
+
+            sortedSchedules.forEach(s => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50";
+                
+                const logoHtml = s.logoUrl ? `<img src="${s.logoUrl}" alt="${s.brand}" class="h-6 object-contain inline-block mr-2">` : `<span class="font-bold text-gray-900">${s.brand}</span>`;
+                
+                tr.innerHTML = `
+                    <td class="px-4 py-3 border-b flex items-center">${logoHtml} ${s.logoUrl ? `<span class="text-xs text-gray-500">(${s.brand})</span>` : ''}</td>
+                    <td class="px-4 py-3 border-b"><span class="${s.kategori === 'Flash Sale' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800'} text-xs font-medium px-2.5 py-0.5 rounded">${s.kategori}</span></td>
+                    <td class="px-4 py-3 border-b text-xs">${s.tglMulai} s/d ${s.tglBerakhir}<br><span class="font-bold">${s.kategori==='Flash Sale' ? s.jamMulai + ' - ' + s.jamBerakhir : 'Sepanjang Hari'}</span></td>
+                    <td class="px-4 py-3 border-b"><span class="text-red-600 font-bold">${s.diskon}%</span> <span class="text-xs text-gray-500">${s.cakupan}</span></td>
+                    <td class="px-4 py-3 border-b">
+                        <button id="btn-del-${s.id}" onclick="deleteEntry('${s.id}')" class="text-red-600 hover:text-red-800 text-xs font-bold bg-red-50 px-2 py-1 rounded border border-red-200">Hapus</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+
+        // --- FUNGSI DISPLAY & ENGINE LOGIC ---
+
+        function renderBrands(brands, containerId, isPrimary) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            if(!brands || brands.length === 0) return;
+            const isSingle = brands.length === 1;
+
+            brands.forEach(brand => {
+                const el = document.createElement('div');
+                let brandIdentity = '';
+                
+                if (isPrimary) {
+                    // ==========================================
+                    // AGGRESSIVE SCALING UNTUK PANEL KIRI (AKTIF)
+                    // ==========================================
+                    if (brand.logoUrl) {
+                        brandIdentity = `
+                            <div class="bg-white rounded-[1.5rem] p-4 lg:p-6 shadow-xl w-full flex-1 flex items-center justify-center min-h-[100px]">
+                                <img src="${brand.logoUrl}" alt="${brand.brand}" class="${isSingle ? 'max-h-40 md:max-h-56 lg:max-h-64' : 'max-h-24 md:max-h-32 lg:max-h-40'} w-full object-contain">
+                            </div>`;
+                    } else {
+                        brandIdentity = `
+                            <div class="bg-white text-black font-black px-6 py-4 rounded-[1.5rem] w-full flex-1 flex items-center justify-center text-center shadow-xl leading-tight ${isSingle ? 'text-5xl md:text-7xl lg:text-[6rem]' : 'text-3xl md:text-4xl lg:text-5xl'}">
+                                ${brand.brand}
+                            </div>`;
+                    }
+
+                    el.className = `bg-white/20 p-4 md:p-6 lg:p-8 rounded-[2rem] border-2 border-white/40 backdrop-blur-sm flex-1 flex flex-col justify-between items-center h-full gap-4 md:gap-6`;
+                    el.innerHTML = `
+                        ${brandIdentity}
+                        <div class="text-yellow-300 font-black drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] text-center w-full flex flex-col items-center justify-end shrink-0">
+                            <div class="leading-none ${isSingle ? 'text-8xl md:text-[9rem] lg:text-[11rem]' : 'text-6xl md:text-[5rem] lg:text-[6rem]'} drop-shadow-2xl">${brand.diskon}%</div>
+                            <div class="inline-block bg-black/30 backdrop-blur-md border border-white/20 text-white mt-4 uppercase font-bold px-6 py-3 rounded-full ${isSingle ? 'text-xl md:text-3xl lg:text-4xl tracking-[0.2em]' : 'text-sm md:text-lg lg:text-2xl tracking-widest'} shadow-lg w-full text-center truncate">${brand.cakupan}</div>
+                        </div>
+                    `;
+                } else {
+                    // ==========================================
+                    // AGGRESSIVE SCALING UNTUK PANEL KANAN (SELANJUTNYA)
+                    // ==========================================
+                    if (isSingle) {
+                        // Jika panel kanan hanya ada 1 brand (misal: Glad2Glow) -> Isi penuh atas-bawah
+                        if (brand.logoUrl) {
+                            brandIdentity = `<div class="flex-1 w-full flex items-center justify-center p-6 bg-white rounded-[2rem] mb-4 border-2 border-blue-100 min-h-0"><img src="${brand.logoUrl}" alt="${brand.brand}" class="max-h-40 md:max-h-56 lg:max-h-64 w-full object-contain"></div>`;
+                        } else {
+                            brandIdentity = `<div class="flex-1 w-full flex items-center justify-center p-6 bg-white rounded-[2rem] mb-4 border-2 border-blue-100 font-black text-5xl md:text-6xl lg:text-7xl text-blue-900 text-center leading-tight min-h-0">${brand.brand}</div>`;
+                        }
+                        el.className = `flex-1 w-full h-full flex flex-col min-h-0`;
+                        el.innerHTML = `
+                            ${brandIdentity}
+                            <div class="bg-blue-600 text-white py-6 md:py-8 lg:py-10 px-6 rounded-[2rem] w-full shadow-inner border-b-4 border-blue-800 text-center shrink-0">
+                                <div class="text-base md:text-xl lg:text-3xl mb-2 uppercase tracking-widest font-bold opacity-90">${brand.cakupan}</div>
+                                <div class="font-black text-7xl md:text-8xl lg:text-[7rem] leading-none drop-shadow-md">${brand.diskon}%</div>
+                            </div>
+                        `;
+                    } else {
+                        // Jika panel kanan ada > 1 brand -> Susun berderet dengan kotak kokoh
+                        if (brand.logoUrl) {
+                            brandIdentity = `<img src="${brand.logoUrl}" class="max-h-16 md:max-h-20 lg:max-h-24 w-32 md:w-40 lg:w-48 object-contain mr-4 shrink-0">`;
+                        } else {
+                            brandIdentity = `<span class="text-2xl md:text-3xl lg:text-4xl font-bold line-clamp-2 text-blue-900 mr-4 w-32 md:w-40 lg:w-48 shrink-0">${brand.brand}</span>`;
+                        }
+                        el.className = `bg-white border-2 border-blue-100 rounded-2xl p-4 flex justify-between items-stretch shadow-md flex-1 w-full h-full`;
+                        el.innerHTML = `
+                            <div class="flex items-center justify-start flex-1 overflow-hidden p-2">
+                                ${brandIdentity}
+                            </div>
+                            <div class="bg-blue-600 text-white text-center py-3 px-6 md:px-8 rounded-xl flex flex-col justify-center items-center shrink-0 min-w-[120px] md:min-w-[140px]">
+                                <div class="text-[10px] md:text-sm lg:text-base mb-1 uppercase font-bold opacity-90 truncate w-full">${brand.cakupan}</div>
+                                <div class="font-black text-4xl md:text-5xl lg:text-6xl leading-none">${brand.diskon}%</div>
+                            </div>
+                        `;
+                    }
+                }
+                container.appendChild(el);
+            });
+        }
+
+        function updateDisplayEngine() {
+            if (schedules.length === 0) {
+                renderEmptyDisplay();
+                return;
+            }
+
+            const now = new Date();
+            const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+            const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
+            const todayStr = localISOTime.split('T')[0]; 
+            const currentHourMin = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+
+            let todaysPromos = schedules.filter(s => s.tglMulai <= todayStr && s.tglBerakhir >= todayStr);
+
+            let slotsMap = {};
+            todaysPromos.forEach(promo => {
+                let key = promo.kategori === 'Reguler' ? '00:00-23:59' : `${promo.jamMulai}-${promo.jamBerakhir}`;
+                if(!slotsMap[key]) {
+                    slotsMap[key] = {
+                        kategori: promo.kategori,
+                        jamMulai: promo.jamMulai,
+                        jamBerakhir: promo.jamBerakhir,
+                        brands: []
+                    };
+                }
+                slotsMap[key].brands.push(promo);
+            });
+
+            let slotsArray = Object.values(slotsMap).sort((a, b) => a.jamMulai.localeCompare(b.jamMulai));
+
+            if(slotsArray.length === 0) {
+                renderEmptyDisplay();
+                return;
+            }
+
+            let activeSlotIndex = 0;
+            let nextSlotIndex = 0;
             let isWaitingForStart = false;
             let targetTime = new Date();
+            let isAllPassed = true;
 
-            // --- LOGIKA PENENTUAN WAKTU & SLOT ---
-            if (hour < 12) { 
-                activeSlot = 1; nextSlot = 2;
-                if (hour < schedule[1].start) {
+            for (let i = 0; i < slotsArray.length; i++) {
+                const slot = slotsArray[i];
+                if (currentHourMin < slot.jamMulai) {
+                    activeSlotIndex = i;
+                    nextSlotIndex = (i + 1 < slotsArray.length) ? i + 1 : 0;
                     isWaitingForStart = true;
-                    targetTime.setHours(schedule[1].start, 0, 0, 0); 
-                } else {
-                    targetTime.setHours(schedule[1].end, 0, 0, 0); 
+                    isAllPassed = false;
+                    
+                    const [h, m] = slot.jamMulai.split(':');
+                    targetTime.setHours(parseInt(h), parseInt(m), 0, 0);
+                    break;
+                } else if (currentHourMin >= slot.jamMulai && currentHourMin < slot.jamBerakhir) {
+                    activeSlotIndex = i;
+                    nextSlotIndex = (i + 1 < slotsArray.length) ? i + 1 : 0;
+                    isWaitingForStart = false;
+                    isAllPassed = false;
+                    
+                    const [h, m] = slot.jamBerakhir.split(':');
+                    targetTime.setHours(parseInt(h), parseInt(m), 0, 0);
+                    break;
                 }
-            } else if (hour >= 12 && hour < 17) {
-                activeSlot = 2; nextSlot = 3;
-                if (hour < schedule[2].start) {
-                    isWaitingForStart = true;
-                    targetTime.setHours(schedule[2].start, 0, 0, 0); 
-                } else {
-                    targetTime.setHours(schedule[2].end, 0, 0, 0); 
-                }
+            }
+
+            if (isAllPassed && slotsArray.length > 0) {
+                activeSlotIndex = 0; 
+                nextSlotIndex = 1 < slotsArray.length ? 1 : 0;
+                isWaitingForStart = true;
+                
+                const [h, m] = slotsArray[0].jamMulai.split(':');
+                targetTime.setDate(targetTime.getDate() + 1); 
+                targetTime.setHours(parseInt(h), parseInt(m), 0, 0);
+            }
+
+            const activeSlot = slotsArray[activeSlotIndex];
+            const nextSlot = slotsArray[nextSlotIndex];
+
+            updateCountdownUI(targetTime, now, isWaitingForStart, activeSlot.kategori);
+
+            document.getElementById('badge-time').innerText = activeSlot.kategori === 'Reguler' ? "SEPANJANG HARI" : `${activeSlot.jamMulai} - ${activeSlot.jamBerakhir}`;
+            document.getElementById('badge-time-label').innerText = activeSlot.kategori === 'Reguler' ? "📅 PROMO REGULER" : "🕒 WAKTU TERBATAS";
+            renderBrands(activeSlot.brands, 'left-brands-container', true);
+
+            if(slotsArray.length > 1) {
+                document.getElementById('right-time').innerText = nextSlot.kategori === 'Reguler' ? "SEPANJANG HARI" : `${nextSlot.jamMulai} - ${nextSlot.jamBerakhir}`;
+                renderBrands(nextSlot.brands, 'right-brands-container', false);
             } else {
-                if (hour < 21) {
-                    activeSlot = 3; nextSlot = 1;
-                    if (hour < schedule[3].start) {
-                        isWaitingForStart = true;
-                        targetTime.setHours(schedule[3].start, 0, 0, 0); 
-                    } else {
-                        targetTime.setHours(schedule[3].end, 0, 0, 0); 
-                    }
-                } else {
-                    activeSlot = 1; nextSlot = 2;
-                    isWaitingForStart = true;
-                    targetTime.setDate(targetTime.getDate() + 1);
-                    targetTime.setHours(schedule[1].start, 0, 0, 0); 
-                }
+                document.getElementById('right-time').innerText = "--:--";
+                document.getElementById('right-brands-container').innerHTML = '<div class="text-center font-bold text-gray-500 w-full h-full flex items-center justify-center">Tidak ada jadwal selanjutnya</div>';
             }
 
-            // --- 1. UPDATE KONTEN PANEL KIRI & KANAN ---
-            for(let i=1; i<=3; i++) {
-                document.getElementById('left-brands-' + i).classList.remove('flex');
-                document.getElementById('left-brands-' + i).classList.add('hidden');
-                document.getElementById('right-brands-' + i).classList.remove('flex');
-                document.getElementById('right-brands-' + i).classList.add('hidden');
-            }
-            
-            document.getElementById('left-brands-' + activeSlot).classList.remove('hidden');
-            document.getElementById('left-brands-' + activeSlot).classList.add('flex');
-            
-            document.getElementById('right-brands-' + nextSlot).classList.remove('hidden');
-            if(nextSlot === 1) {
-                document.getElementById('right-brands-' + nextSlot).classList.add('block'); // Skintific block
-            } else {
-                document.getElementById('right-brands-' + nextSlot).classList.add('flex'); // Multi brand flex
-            }
-            
-            document.getElementById('left-time').innerText = schedule[activeSlot].timeStr;
-            document.getElementById('right-time').innerText = schedule[nextSlot].timeStr;
+            renderTimeline(slotsArray, activeSlotIndex, currentHourMin, isWaitingForStart);
+        }
 
-            // --- 2. UPDATE COUNTDOWN TIMER ---
-            let diff = targetTime - now;
-            if (diff <= 0) diff = 0; 
+        function renderEmptyDisplay() {
+            document.getElementById('badge-time').innerText = "--:--";
+            document.getElementById('badge-time-label').innerText = "🕒 WAKTU TERBATAS";
+            document.getElementById('left-brands-container').innerHTML = `<div class="bg-white/20 p-6 rounded-xl border border-white/40 w-full h-full flex items-center justify-center font-bold text-xl text-center">Belum ada jadwal hari ini.<br><span class="text-sm font-normal mt-2 block">Tambahkan via Panel Admin</span></div>`;
+            document.getElementById('right-brands-container').innerHTML = '';
+            document.getElementById('timeline-container').innerHTML = '<div class="text-center w-full text-blue-800 font-bold py-2">Menunggu jadwal dari Google Sheets...</div>';
+            document.getElementById('countdown-container').classList.add('hidden');
+        }
 
-            const hoursRemaining = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutesRemaining = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const secondsRemaining = Math.floor((diff % (1000 * 60)) / 1000);
-
-            document.getElementById('hours').innerText = hoursRemaining.toString().padStart(2, '0');
-            document.getElementById('minutes').innerText = minutesRemaining.toString().padStart(2, '0');
-            document.getElementById('seconds').innerText = secondsRemaining.toString().padStart(2, '0');
-
-            // --- 3. UPDATE TEMA & WARNA ---
+        function updateCountdownUI(targetTime, now, isWaitingForStart, kategori) {
             const badgeLabel = document.getElementById('left-panel-badge');
+            const badgeStatus = document.getElementById('badge-status');
             const timerLabel = document.getElementById('timer-label');
             const leftPanelBg = document.getElementById('left-panel-bg');
             const countdownContainer = document.getElementById('countdown-container');
-            
-            if (isWaitingForStart) {
-                badgeLabel.innerText = "⏳ SEGERA MULAI";
-                badgeLabel.className = "absolute -top-3 left-6 bg-blue-600 text-white border-2 border-white font-bold px-3 py-1 rounded-full text-[10px] md:text-sm lg:text-base shadow-lg transition-colors z-10";
-                timerLabel.innerText = "Promo Dimulai Dalam:";
-                
-                leftPanelBg.classList.replace('from-red-500', 'from-blue-500');
-                leftPanelBg.classList.replace('to-pink-600', 'to-cyan-500');
-                leftPanelBg.classList.replace('border-yellow-400', 'border-white');
-                leftPanelBg.classList.replace('neon-glow', 'neon-glow-blue');
 
-                countdownContainer.classList.replace('from-yellow-300', 'from-white');
-                countdownContainer.classList.replace('to-yellow-500', 'to-blue-100');
-                countdownContainer.classList.replace('text-red-700', 'text-blue-800');
+            if (kategori === 'Reguler') {
+                countdownContainer.classList.add('hidden'); 
             } else {
-                badgeLabel.innerText = "⚡ SEDANG BERLANGSUNG";
-                badgeLabel.className = "absolute -top-3 left-6 bg-yellow-400 text-red-700 border-2 border-transparent font-bold px-3 py-1 rounded-full text-[10px] md:text-sm lg:text-base shadow-lg transition-colors z-10";
-                timerLabel.innerText = "Promo Berakhir Dalam:";
+                countdownContainer.classList.remove('hidden');
                 
-                leftPanelBg.classList.replace('from-blue-500', 'from-red-500');
-                leftPanelBg.classList.replace('to-cyan-500', 'to-pink-600');
-                leftPanelBg.classList.replace('border-white', 'border-yellow-400');
-                leftPanelBg.classList.replace('neon-glow-blue', 'neon-glow');
+                let diff = targetTime - now;
+                if (diff <= 0) diff = 0; 
+                const hoursRemaining = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutesRemaining = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secondsRemaining = Math.floor((diff % (1000 * 60)) / 1000);
 
-                countdownContainer.classList.replace('from-white', 'from-yellow-300');
-                countdownContainer.classList.replace('to-blue-100', 'to-yellow-500');
-                countdownContainer.classList.replace('text-blue-800', 'text-red-700');
+                document.getElementById('hours').innerText = hoursRemaining.toString().padStart(2, '0');
+                document.getElementById('minutes').innerText = minutesRemaining.toString().padStart(2, '0');
+                document.getElementById('seconds').innerText = secondsRemaining.toString().padStart(2, '0');
             }
 
-            // --- 4. UPDATE HIGHLIGHT TIMELINE BAWAH ---
-            for(let i=1; i<=3; i++) {
-                const stepEl = document.getElementById('timeline-step-' + i);
-                const badgeEl = document.getElementById('timeline-badge-' + i);
-                const circleEl = document.getElementById('timeline-circle-' + i);
-
-                stepEl.className = "flex-1 bg-white rounded-lg md:rounded-xl p-1.5 md:p-2.5 flex items-center justify-between shadow-sm relative transition-all duration-500";
-                badgeEl.className = "hidden absolute -top-2 left-1/2 transform -translate-x-1/2 text-[7px] md:text-[9px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shadow-md text-white z-10";
-                circleEl.className = "text-white w-4 h-4 md:w-6 md:h-6 rounded-full flex items-center justify-center font-bold text-[9px] md:text-xs transition-colors bg-gray-300 shrink-0";
-
-                if (i === activeSlot && hour < 21) {
-                    stepEl.classList.add('border-2', isWaitingForStart ? 'border-blue-500' : 'border-red-500', 'shadow-[0_0_10px_rgba(255,0,0,0.2)]', 'scale-[1.02]', 'z-20');
-                    badgeEl.classList.remove('hidden');
-                    
-                    if(isWaitingForStart) {
-                        badgeEl.classList.add('bg-blue-500');
-                        badgeEl.innerText = "SEGERA MULAI";
-                        circleEl.classList.replace('bg-gray-300', 'bg-blue-500');
-                    } else {
-                        badgeEl.classList.add('bg-red-500');
-                        badgeEl.innerText = "⚡ AKTIF";
-                        circleEl.classList.replace('bg-gray-300', 'bg-red-500');
-                    }
-                } else if (i < activeSlot || (hour >= 21)) {
-                    stepEl.classList.add('opacity-60', 'bg-gray-100');
-                    badgeEl.classList.add('hidden');
-                } else {
-                    circleEl.classList.replace('bg-gray-300', 'bg-blue-600');
-                    badgeEl.className = "absolute -top-2 right-1 md:right-2 bg-blue-600 text-white text-[7px] md:text-[9px] font-bold px-2 py-0.5 rounded-full shadow-md z-10";
-                    badgeEl.innerText = "AKAN DATANG";
-                    badgeEl.classList.remove('hidden');
-                }
+            if (isWaitingForStart) {
+                badgeStatus.innerText = "⏳ SEGERA MULAI";
+                badgeLabel.className = "absolute -top-4 left-6 bg-blue-600 text-white border-2 border-white font-bold px-4 py-1 rounded-full text-xs md:text-sm lg:text-lg shadow-lg transition-colors";
+                timerLabel.innerText = "Promo Dimulai Dalam:";
+                leftPanelBg.classList.replace('from-red-500', 'from-blue-500'); leftPanelBg.classList.replace('to-pink-600', 'to-cyan-500'); leftPanelBg.classList.replace('border-yellow-400', 'border-white'); leftPanelBg.classList.replace('neon-glow', 'neon-glow-blue');
+                countdownContainer.classList.replace('from-yellow-300', 'from-white'); countdownContainer.classList.replace('to-yellow-500', 'to-blue-100'); countdownContainer.classList.replace('text-red-700', 'text-blue-800');
+            } else {
+                badgeStatus.innerText = "⚡ SEDANG BERLANGSUNG";
+                badgeLabel.className = "absolute -top-4 left-6 bg-yellow-400 text-red-700 border-2 border-transparent font-bold px-4 py-1 rounded-full text-xs md:text-sm lg:text-lg shadow-lg transition-colors";
+                timerLabel.innerText = "Promo Berakhir Dalam:";
+                leftPanelBg.classList.replace('from-blue-500', 'from-red-500'); leftPanelBg.classList.replace('to-cyan-500', 'to-pink-600'); leftPanelBg.classList.replace('border-white', 'border-yellow-400'); leftPanelBg.classList.replace('neon-glow-blue', 'neon-glow');
+                countdownContainer.classList.replace('from-white', 'from-yellow-300'); countdownContainer.classList.replace('to-blue-100', 'to-yellow-500'); countdownContainer.classList.replace('text-blue-800', 'text-red-700');
             }
         }
 
-        setInterval(updateDisplay, 1000);
-        updateDisplay(); 
+        function renderTimeline(slotsArray, activeIndex, currentHourMin, isWaitingForStart) {
+            const container = document.getElementById('timeline-container');
+            Array.from(container.children).forEach(child => { if(!child.classList.contains('absolute')) container.removeChild(child); });
+
+            let displaySlots = slotsArray.slice(0, 3); 
+
+            displaySlots.forEach((slot, i) => {
+                const stepEl = document.createElement('div');
+                const brandNames = slot.brands.map(b => b.brand).join(' & ');
+                const maxDiskon = Math.max(...slot.brands.map(b => parseInt(b.diskon)));
+                
+                let isPassed = false;
+                let isActive = false;
+                
+                if (i === activeIndex && currentHourMin <= "23:59") {
+                    isActive = true;
+                } else if (i < activeIndex || (activeIndex === slotsArray.length-1 && isWaitingForStart && i !== activeIndex)) {
+                    isPassed = true;
+                }
+
+                stepEl.className = `flex-1 bg-white rounded-xl p-2 md:p-3 flex items-center justify-between shadow-sm relative transition-all duration-500 ${isPassed ? 'opacity-60 bg-gray-100' : ''} ${isActive ? (isWaitingForStart ? 'border-2 border-blue-500 scale-[1.02] z-10' : 'border-2 border-red-500 shadow-[0_0_10px_rgba(255,0,0,0.2)] scale-[1.02] z-10') : ''}`;
+                
+                let badgeHtml = '';
+                let circleClass = 'bg-gray-300';
+                
+                if (isActive) {
+                    circleClass = isWaitingForStart ? 'bg-blue-500' : 'bg-red-500';
+                    badgeHtml = `<div class="absolute -top-3 left-1/2 transform -translate-x-1/2 ${isWaitingForStart ? 'bg-blue-500' : 'bg-red-500'} text-white text-[8px] md:text-[10px] font-bold px-2 py-1 rounded-full whitespace-nowrap shadow-md">${isWaitingForStart ? 'SEGERA MULAI' : '⚡ AKTIF'}</div>`;
+                } else if (!isPassed) {
+                    circleClass = 'bg-blue-600';
+                    badgeHtml = `<div class="absolute -top-3 right-2 bg-blue-600 text-white text-[8px] md:text-[10px] font-bold px-2 py-1 rounded-full shadow-md hidden sm:block">AKAN DATANG</div>`;
+                }
+
+                stepEl.innerHTML = `
+                    ${badgeHtml}
+                    <div class="flex items-center gap-1 md:gap-3">
+                        <div class="${circleClass} text-white w-5 h-5 md:w-8 md:h-8 rounded-full flex items-center justify-center font-bold text-xs md:text-base transition-colors shrink-0">${i+1}</div>
+                        <div class="hidden sm:block">
+                            <div class="text-blue-800 font-bold text-[10px] md:text-sm">🕒 ${slot.kategori === 'Reguler' ? 'Sepanjang Hari' : slot.jamMulai + ' - ' + slot.jamBerakhir}</div>
+                            <div class="font-black text-xs md:text-sm mt-0.5 text-black leading-tight line-clamp-1">${brandNames}</div>
+                        </div>
+                    </div>
+                    <div class="text-center shrink-0">
+                        <div class="text-[8px] md:text-xs text-blue-600 font-bold">UP TO</div>
+                        <div class="text-sm md:text-2xl font-black text-blue-600 leading-tight">${maxDiskon}%</div>
+                    </div>
+                `;
+                container.appendChild(stepEl);
+
+                if(i < displaySlots.length - 1) {
+                    const dot = document.createElement('div');
+                    dot.className = "text-blue-400 font-bold text-sm md:text-xl hidden sm:block"; dot.innerText = "••••";
+                    container.appendChild(dot);
+                }
+            });
+        }
+
+        initApp();
     </script>
 </body>
 </html>
