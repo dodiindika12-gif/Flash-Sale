@@ -25,46 +25,13 @@
             background: #2563eb;
         }
         .tv-mode #display-panel {
-            width: 1280px !important;
-            height: 720px !important;
+            width: 1366px !important;
+            height: 768px !important;
             position: fixed !important;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(var(--tv-scale, 1));
             transform-origin: center center;
-        }
-        .tv-mode #left-panel-bg {
-            overflow: hidden;
-        }
-        .tv-mode #left-brands-container {
-            align-items: center !important;
-        }
-        .tv-mode .active-brand-card {
-            max-height: 100%;
-            overflow: hidden;
-        }
-        .tv-mode .active-logo-box {
-            height: 128px;
-            min-height: 0 !important;
-            flex: none !important;
-        }
-        .tv-mode .active-logo-box img {
-            max-height: 88px !important;
-        }
-        .tv-mode .active-brand-text {
-            height: 128px;
-            min-height: 0 !important;
-            flex: none !important;
-            font-size: 30px !important;
-        }
-        .tv-mode .active-discount-number {
-            font-size: 64px !important;
-            line-height: 0.8 !important;
-        }
-        .tv-mode .active-scope-pill {
-            margin-top: 8px !important;
-            padding: 8px 14px !important;
-            font-size: 14px !important;
         }
         /* Loader CSS */
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle;}
@@ -257,8 +224,8 @@
         
         let schedules = [];
         let displayIntervalId = null;
-        const TV_BASE_WIDTH = 1280;
-        const TV_BASE_HEIGHT = 720;
+        const TV_BASE_WIDTH = 1366;
+        const TV_BASE_HEIGHT = 768;
         const TV_SAFE_SCALE = 0.985;
 
         function fitTvDisplay() {
@@ -464,22 +431,22 @@
                     // ==========================================
                     if (brand.logoUrl) {
                         brandIdentity = `
-                            <div class="active-logo-box bg-white rounded-[1.5rem] p-3 lg:p-4 shadow-xl w-full flex-none flex items-center justify-center min-h-0">
+                            <div class="bg-white rounded-[1.5rem] p-4 lg:p-6 shadow-xl w-full flex-1 flex items-center justify-center min-h-[100px]">
                                 <img src="${brand.logoUrl}" alt="${brand.brand}" class="${isSingle ? 'max-h-40 md:max-h-56 lg:max-h-64' : 'max-h-24 md:max-h-32 lg:max-h-40'} w-full object-contain">
                             </div>`;
                     } else {
                         brandIdentity = `
-                            <div class="active-brand-text bg-white text-black font-black px-4 py-3 rounded-[1.5rem] w-full flex-none flex items-center justify-center text-center shadow-xl leading-tight ${isSingle ? 'text-5xl md:text-7xl lg:text-[6rem]' : 'text-3xl md:text-4xl lg:text-5xl'}">
+                            <div class="bg-white text-black font-black px-6 py-4 rounded-[1.5rem] w-full flex-1 flex items-center justify-center text-center shadow-xl leading-tight ${isSingle ? 'text-5xl md:text-7xl lg:text-[6rem]' : 'text-3xl md:text-4xl lg:text-5xl'}">
                                 ${brand.brand}
                             </div>`;
                     }
 
-                    el.className = `active-brand-card bg-white/20 p-3 md:p-4 lg:p-4 rounded-[2rem] border-2 border-white/40 backdrop-blur-sm flex-1 flex flex-col justify-center items-center h-full gap-2 md:gap-3`;
+                    el.className = `bg-white/20 p-4 md:p-6 lg:p-8 rounded-[2rem] border-2 border-white/40 backdrop-blur-sm flex-1 flex flex-col justify-between items-center h-full gap-4 md:gap-6`;
                     el.innerHTML = `
                         ${brandIdentity}
                         <div class="text-yellow-300 font-black drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] text-center w-full flex flex-col items-center justify-end shrink-0">
-                            <div class="active-discount-number leading-none ${isSingle ? 'text-8xl md:text-[9rem] lg:text-[11rem]' : 'text-6xl md:text-[5rem] lg:text-[6rem]'} drop-shadow-2xl">${brand.diskon}%</div>
-                            <div class="active-scope-pill inline-block bg-black/30 backdrop-blur-md border border-white/20 text-white mt-2 uppercase font-bold px-4 py-2 rounded-full ${isSingle ? 'text-xl md:text-3xl lg:text-4xl tracking-[0.2em]' : 'text-sm md:text-lg lg:text-xl tracking-widest'} shadow-lg w-full text-center truncate">${brand.cakupan}</div>
+                            <div class="leading-none ${isSingle ? 'text-8xl md:text-[9rem] lg:text-[11rem]' : 'text-6xl md:text-[5rem] lg:text-[6rem]'} drop-shadow-2xl">${brand.diskon}%</div>
+                            <div class="inline-block bg-black/30 backdrop-blur-md border border-white/20 text-white mt-4 uppercase font-bold px-6 py-3 rounded-full ${isSingle ? 'text-xl md:text-3xl lg:text-4xl tracking-[0.2em]' : 'text-sm md:text-lg lg:text-2xl tracking-widest'} shadow-lg w-full text-center truncate">${brand.cakupan}</div>
                         </div>
                     `;
                 } else {
