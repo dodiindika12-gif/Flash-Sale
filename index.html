@@ -18,6 +18,21 @@
         .display-mode .neon-glow-blue {
             box-shadow: 0 0 15px 5px rgba(59, 130, 246, 0.5), inset 0 0 10px rgba(255,255,255,0.5);
         }
+        .tv-mode {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #2563eb;
+        }
+        .tv-mode #display-panel {
+            width: 1920px !important;
+            height: 1080px !important;
+            position: fixed !important;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(var(--tv-scale, 1));
+            transform-origin: center center;
+        }
         /* Loader CSS */
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle;}
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -209,6 +224,16 @@
         
         let schedules = [];
         let displayIntervalId = null;
+        const TV_BASE_WIDTH = 1920;
+        const TV_BASE_HEIGHT = 1080;
+        const TV_SAFE_SCALE = 0.965;
+
+        function fitTvDisplay() {
+            const display = document.getElementById('display-panel');
+            if (!display || display.classList.contains('hidden')) return;
+            const scale = Math.min(window.innerWidth / TV_BASE_WIDTH, window.innerHeight / TV_BASE_HEIGHT) * TV_SAFE_SCALE;
+            document.documentElement.style.setProperty('--tv-scale', scale.toString());
+        }
 
         // Inisialisasi Aplikasi 
         function initApp() {
@@ -229,7 +254,8 @@
             } else {
                 document.getElementById('display-panel').classList.remove('hidden');
                 document.getElementById('admin-panel').classList.add('hidden');
-                document.body.className = "bg-white"; 
+                document.body.className = "bg-white tv-mode"; 
+                fitTvDisplay();
                 
                 // TV Load Data pertama kali, lalu mulai loop
                 loadDataFromSheet().then(() => {
@@ -237,6 +263,7 @@
                     setTimeout(() => document.getElementById('tv-loader').classList.add('hidden'), 500);
                     
                     updateDisplayEngine(); // panggil segera
+                    fitTvDisplay();
                     if(displayIntervalId) clearInterval(displayIntervalId);
                     displayIntervalId = setInterval(updateDisplayEngine, 1000); // 1 detik hitung mundur
                     
@@ -248,6 +275,8 @@
 
         function goToAdmin() { window.location.href = "?admin=true"; }
         function goToDisplay() { window.location.href = "?"; }
+        window.addEventListener('resize', fitTvDisplay);
+        window.addEventListener('orientationchange', fitTvDisplay);
 
         // --- API GOOGLE SHEETS L0GIC ---
 
