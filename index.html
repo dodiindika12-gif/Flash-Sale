@@ -2,7 +2,6 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <!-- Perbaikan Viewport: Mencegah zoom otomatis pada Kiosk Browser -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Display Flash Sale Toko</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,210 +19,212 @@
         }
     </style>
 </head>
-<!-- Perbaikan Body: h-screen dan overflow-hidden untuk memaksa pas di 1 layar TV -->
-<body class="bg-gradient-to-b from-blue-400 to-blue-600 h-screen w-full flex flex-col p-2 md:p-4 text-white overflow-hidden">
+<body class="bg-gradient-to-b from-blue-400 to-blue-600 h-screen w-full flex flex-col p-3 md:p-4 text-white overflow-hidden">
 
-    <!-- HEADER -->
-    <header class="text-center relative mb-4 mt-2 shrink-0">
-        <h1 class="text-4xl md:text-5xl lg:text-7xl font-black italic tracking-wider text-white text-outline mb-2">
-            FLASH SALE <span class="bg-red-600 text-yellow-300 px-3 md:px-4 rounded-xl shadow-lg border-2 border-white inline-block transform -skew-x-12">HARI INI</span>
+    <!-- HEADER (Kunci agar tidak menyusut) -->
+    <header class="text-center relative mb-3 mt-1 shrink-0">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black italic tracking-wider text-white text-outline mb-2">
+            FLASH SALE <span class="bg-red-600 text-yellow-300 px-3 rounded-xl shadow-lg border-2 border-white inline-block transform -skew-x-12">HARI INI</span>
         </h1>
-        <div class="bg-pink-500 text-white font-bold text-sm md:text-lg lg:text-2xl py-1 px-4 md:px-8 rounded-full inline-block shadow-md transform -skew-x-12 border-2 border-white">
+        <div class="bg-pink-500 text-white font-bold text-xs md:text-base lg:text-xl py-1 px-6 rounded-full inline-block shadow-md transform -skew-x-12 border-2 border-white">
             <span class="transform skew-x-12 inline-block">Belanja sekarang sebelum waktunya habis!</span>
         </div>
     </header>
 
-    <!-- MAIN CONTENT -->
-    <main class="flex-1 flex flex-col md:flex-row gap-4 md:gap-6 px-2 md:px-10 min-h-0">
+    <!-- MAIN CONTENT (DIKUNCI FLEX-ROW AGAR SELALU KIRI-KANAN DI TV) -->
+    <main class="flex-1 flex flex-row gap-4 px-2 md:px-6 min-h-0">
         
-        <!-- LEFT PANEL (FOKUS UTAMA: SEDANG BERLANGSUNG / SEGERA MULAI) -->
-        <div id="left-panel-bg" class="flex-[1.5] lg:flex-1 bg-gradient-to-br from-red-500 to-pink-600 rounded-[2rem] p-4 md:p-6 border-4 border-yellow-400 neon-glow relative flex flex-col justify-between transition-colors duration-500 h-full">
-            <div id="left-panel-badge" class="absolute -top-4 left-6 bg-yellow-400 text-red-700 font-bold px-4 py-1 rounded-full text-xs md:text-sm lg:text-lg shadow-lg transition-colors">
+        <!-- LEFT PANEL (FOKUS UTAMA) - Diberi porsi lebar lebih besar (w-2/3) -->
+        <div id="left-panel-bg" class="w-[65%] bg-gradient-to-br from-red-500 to-pink-600 rounded-[2rem] p-4 md:p-5 border-4 border-yellow-400 neon-glow relative flex flex-col justify-between transition-colors duration-500 min-h-0">
+            <div id="left-panel-badge" class="absolute -top-3 left-6 bg-yellow-400 text-red-700 font-bold px-4 py-1 rounded-full text-[10px] md:text-sm lg:text-base shadow-lg transition-colors z-10">
                 ⚡ SEDANG BERLANGSUNG
             </div>
             
-            <div class="flex flex-col xl:flex-row justify-between items-start mt-4 gap-4 flex-1 min-h-0">
-                <div class="xl:w-1/3 flex flex-col justify-center">
-                    <h2 id="left-time" class="text-3xl md:text-4xl lg:text-6xl font-black text-yellow-300 drop-shadow-md">00:00 - 00:00</h2>
-                    <p class="text-xs md:text-sm lg:text-xl mt-2 font-bold flex items-center gap-2">
+            <!-- WRAPPER JAM & BRAND (DIKUNCI FLEX-ROW AGAR BERSEBELAHAN, TIDAK MENUMPUK KE BAWAH) -->
+            <div class="flex flex-row justify-between items-center mt-3 gap-3 flex-1 min-h-0">
+                
+                <!-- JAM -->
+                <div class="w-[35%] flex flex-col justify-center items-start text-left shrink-0">
+                    <h2 id="left-time" class="text-3xl md:text-4xl lg:text-5xl font-black text-yellow-300 drop-shadow-md">00:00 - 00:00</h2>
+                    <p class="text-[10px] md:text-sm lg:text-lg mt-1 font-bold flex items-center justify-start gap-1">
                         <span>🕒</span> WAKTU TERBATAS
                     </p>
-                    <p class="text-lg md:text-xl lg:text-3xl font-black italic mt-4 leading-tight">
+                    <p class="text-sm md:text-lg lg:text-2xl font-black italic mt-2 leading-tight">
                         Jangan sampai<br><span class="text-yellow-300">kelewatan!</span>
                     </p>
                 </div>
                 
-                <div class="flex flex-col sm:flex-row gap-4 text-center w-full xl:w-2/3 justify-end items-stretch h-full">
+                <!-- BRAND SLOT WRAPPER (Menyusut otomatis) -->
+                <div class="flex flex-row gap-2 md:gap-3 text-center w-[65%] items-stretch justify-center h-full min-h-0">
                     
                     <!-- SLOT 1: SKINTIFIC -->
-                    <div id="left-brands-1" class="hidden w-full flex-1 bg-white/20 p-4 md:p-6 rounded-xl border border-white/40 backdrop-blur-sm flex flex-col items-center justify-center h-full">
-                        <div class="bg-white text-black font-bold px-6 py-2 rounded-full mb-3 text-lg md:text-2xl lg:text-3xl w-max">SKINTIFIC</div>
-                        <div class="text-yellow-300 font-black text-3xl md:text-4xl lg:text-5xl drop-shadow-md">35%<span class="text-xs md:text-sm lg:text-base block text-white mt-1 uppercase tracking-widest">Diskon Semua Produk</span></div>
+                    <div id="left-brands-1" class="hidden w-full flex-1 bg-white/20 p-2 md:p-4 rounded-xl border border-white/40 backdrop-blur-sm flex flex-col items-center justify-center min-h-0">
+                        <div class="bg-white text-black font-bold px-3 py-1 rounded-full mb-1 text-sm md:text-xl lg:text-2xl w-max">SKINTIFIC</div>
+                        <div class="text-yellow-300 font-black text-2xl md:text-4xl lg:text-5xl drop-shadow-md leading-none">35%<span class="text-[9px] md:text-xs block text-white mt-1 uppercase tracking-widest leading-tight">Diskon Semua Produk</span></div>
                     </div>
 
                     <!-- SLOT 2: L'OREAL & GARNIER -->
-                    <div id="left-brands-2" class="hidden w-full flex flex-col sm:flex-row gap-4 h-full">
-                        <div class="bg-white/20 p-3 md:p-5 rounded-xl border border-white/40 backdrop-blur-sm flex-1 flex flex-col justify-center h-full">
-                            <div class="bg-white text-black font-bold px-2 py-1 md:px-4 md:py-2 rounded mb-2 text-sm md:text-xl w-max mx-auto">L'ORÉAL</div>
-                            <div class="text-yellow-300 font-black text-2xl md:text-3xl lg:text-4xl drop-shadow-md">35%<span class="text-[10px] md:text-xs lg:text-sm block text-white mt-1">DISKON</span></div>
+                    <div id="left-brands-2" class="hidden w-full flex flex-row gap-2 md:gap-3 min-h-0">
+                        <div class="bg-white/20 p-2 md:p-3 rounded-xl border border-white/40 backdrop-blur-sm flex-1 flex flex-col justify-center items-center min-h-0">
+                            <div class="bg-white text-black font-bold px-2 py-0.5 rounded mb-1 text-[10px] md:text-sm w-max">L'ORÉAL</div>
+                            <div class="text-yellow-300 font-black text-xl md:text-3xl drop-shadow-md leading-none">35%<span class="text-[8px] md:text-[10px] block text-white mt-1">DISKON</span></div>
                         </div>
-                        <div class="bg-white/20 p-3 md:p-5 rounded-xl border border-white/40 backdrop-blur-sm flex-1 flex flex-col justify-center h-full">
-                            <div class="bg-white text-green-600 font-bold px-2 py-1 md:px-4 md:py-2 rounded mb-2 text-sm md:text-xl w-max mx-auto">GARNIER</div>
-                            <div class="text-yellow-300 font-black text-2xl md:text-3xl lg:text-4xl drop-shadow-md">35%<span class="text-[10px] md:text-xs lg:text-sm block text-white mt-1">DISKON</span></div>
+                        <div class="bg-white/20 p-2 md:p-3 rounded-xl border border-white/40 backdrop-blur-sm flex-1 flex flex-col justify-center items-center min-h-0">
+                            <div class="bg-white text-green-600 font-bold px-2 py-0.5 rounded mb-1 text-[10px] md:text-sm w-max">GARNIER</div>
+                            <div class="text-yellow-300 font-black text-xl md:text-3xl drop-shadow-md leading-none">35%<span class="text-[8px] md:text-[10px] block text-white mt-1">DISKON</span></div>
                         </div>
                     </div>
 
                     <!-- SLOT 3: MAYBELLINE & GLAD2GLOW -->
-                    <div id="left-brands-3" class="hidden w-full flex flex-col sm:flex-row gap-4 h-full">
-                        <div class="bg-white/20 p-3 md:p-5 rounded-xl border border-white/40 backdrop-blur-sm flex-1 flex flex-col justify-center h-full">
-                            <div class="bg-white text-black font-bold px-2 py-1 md:px-4 md:py-2 rounded mb-2 text-xs md:text-sm lg:text-lg w-max mx-auto leading-tight">MAYBELLINE<br><span class="text-[8px] md:text-[10px] lg:text-xs font-normal">NEW YORK</span></div>
-                            <div class="text-yellow-300 font-black text-2xl md:text-3xl lg:text-4xl drop-shadow-md">35%<span class="text-[10px] md:text-xs lg:text-sm block text-white mt-1">DISKON</span></div>
+                    <div id="left-brands-3" class="hidden w-full flex flex-row gap-2 md:gap-3 min-h-0">
+                        <div class="bg-white/20 p-2 md:p-3 rounded-xl border border-white/40 backdrop-blur-sm flex-1 flex flex-col justify-center items-center min-h-0">
+                            <div class="bg-white text-black font-bold px-2 py-0.5 rounded mb-1 text-[9px] md:text-xs w-max leading-tight">MAYBELLINE<br><span class="text-[7px] md:text-[9px] font-normal">NEW YORK</span></div>
+                            <div class="text-yellow-300 font-black text-xl md:text-3xl drop-shadow-md leading-none">35%<span class="text-[8px] md:text-[10px] block text-white mt-1">DISKON</span></div>
                         </div>
-                        <div class="bg-white/20 p-3 md:p-5 rounded-xl border border-white/40 backdrop-blur-sm flex-1 flex flex-col justify-center h-full">
-                            <div class="bg-white text-purple-600 font-bold px-2 py-1 md:px-4 md:py-2 rounded mb-2 text-sm md:text-xl w-max mx-auto">Glad2Glow</div>
-                            <div class="text-yellow-300 font-black text-2xl md:text-3xl lg:text-4xl drop-shadow-md">35%<span class="text-[10px] md:text-xs lg:text-sm block text-white mt-1">DISKON</span></div>
+                        <div class="bg-white/20 p-2 md:p-3 rounded-xl border border-white/40 backdrop-blur-sm flex-1 flex flex-col justify-center items-center min-h-0">
+                            <div class="bg-white text-purple-600 font-bold px-2 py-0.5 rounded mb-1 text-[10px] md:text-sm w-max">Glad2Glow</div>
+                            <div class="text-yellow-300 font-black text-xl md:text-3xl drop-shadow-md leading-none">35%<span class="text-[8px] md:text-[10px] block text-white mt-1">DISKON</span></div>
                         </div>
                     </div>
 
                 </div>
             </div>
 
-            <!-- COUNTDOWN TIMER -->
-            <div id="countdown-container" class="mt-4 shrink-0 bg-gradient-to-r from-yellow-300 to-yellow-500 text-red-700 rounded-2xl md:rounded-full py-2 px-4 md:px-8 text-center border-4 border-white shadow-[0_4px_15px_rgba(0,0,0,0.3)] w-full transition-colors">
-                <p id="timer-label" class="font-bold text-[10px] md:text-xs lg:text-sm mb-1 uppercase tracking-wider">Promo Berakhir Dalam:</p>
-                <div class="flex justify-center items-center gap-2 md:gap-4 text-2xl md:text-4xl lg:text-5xl font-black">
-                    <div class="w-12 md:w-16 lg:w-20"><span id="hours">00</span><span class="text-xs md:text-sm lg:text-xl block font-bold">JAM</span></div>
-                    <div class="pb-3 md:pb-6">:</div>
-                    <div class="w-12 md:w-16 lg:w-20"><span id="minutes">00</span><span class="text-xs md:text-sm lg:text-xl block font-bold">MENIT</span></div>
-                    <div class="pb-3 md:pb-6">:</div>
-                    <div class="w-12 md:w-16 lg:w-20"><span id="seconds">00</span><span class="text-xs md:text-sm lg:text-xl block font-bold">DETIK</span></div>
+            <!-- COUNTDOWN TIMER (Ukurannya dirapikan agar proporsional) -->
+            <div id="countdown-container" class="mt-3 shrink-0 bg-gradient-to-r from-yellow-300 to-yellow-500 text-red-700 rounded-xl md:rounded-full py-1.5 px-4 text-center border-2 md:border-4 border-white shadow-lg w-full transition-colors mx-auto">
+                <p id="timer-label" class="font-bold text-[9px] md:text-[11px] lg:text-xs mb-0.5 uppercase tracking-wider leading-none">Promo Berakhir Dalam:</p>
+                <div class="flex justify-center items-center gap-2 md:gap-4 text-2xl md:text-3xl lg:text-4xl font-black leading-none">
+                    <div class="w-12 md:w-16"><span id="hours">00</span><span class="text-[9px] md:text-xs block font-bold mt-0.5">JAM</span></div>
+                    <div class="pb-2 md:pb-3 text-lg md:text-2xl">:</div>
+                    <div class="w-12 md:w-16"><span id="minutes">00</span><span class="text-[9px] md:text-xs block font-bold mt-0.5">MENIT</span></div>
+                    <div class="pb-2 md:pb-3 text-lg md:text-2xl">:</div>
+                    <div class="w-12 md:w-16"><span id="seconds">00</span><span class="text-[9px] md:text-xs block font-bold mt-0.5">DETIK</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- RIGHT PANEL (SELANJUTNYA) -->
-        <div class="w-full md:w-1/3 lg:w-1/3 bg-blue-50 text-blue-900 rounded-[2rem] p-4 shadow-xl flex flex-col border-4 border-blue-200 h-full overflow-hidden">
-            <div class="bg-blue-600 text-white font-bold py-1 px-4 md:px-6 rounded-full text-center text-xs md:text-sm lg:text-xl shadow-inner mb-3">
+        <!-- RIGHT PANEL (SELANJUTNYA) - Lebar sisa 35% -->
+        <div class="w-[35%] bg-blue-50 text-blue-900 rounded-[2rem] p-3 md:p-4 shadow-xl flex flex-col border-4 border-blue-200 min-h-0">
+            <div class="bg-blue-600 text-white font-bold py-1 px-4 rounded-full text-center text-[10px] md:text-sm lg:text-base shadow-inner mb-2 shrink-0">
                 🕒 SELANJUTNYA
             </div>
-            <h3 id="right-time" class="text-xl md:text-2xl lg:text-3xl font-black text-center text-blue-800 mb-3 md:mb-4">--:--</h3>
+            <h3 id="right-time" class="text-lg md:text-xl lg:text-3xl font-black text-center text-blue-800 mb-2 shrink-0">--:--</h3>
             
-            <div class="space-y-3 flex-1 flex flex-col justify-center min-h-0">
+            <div class="space-y-2 flex-1 flex flex-col justify-center min-h-0">
                 
                 <!-- NEXT SLOT 1: SKINTIFIC -->
                 <div id="right-brands-1" class="hidden w-full h-full">
-                    <div class="bg-white border-2 border-blue-100 rounded-xl p-3 flex justify-between items-center shadow-sm w-full h-full">
-                        <div class="font-bold text-base md:text-lg lg:text-2xl text-black">SKINTIFIC</div>
-                        <div class="bg-blue-600 text-white text-center py-1 px-2 md:px-4 rounded-lg">
-                            <div class="text-[8px] md:text-[10px] lg:text-[11px] leading-tight mb-1">SEMUA PRODUK</div>
-                            <div class="font-black text-lg md:text-xl lg:text-2xl">35%</div>
+                    <div class="bg-white border-2 border-blue-100 rounded-xl p-2 flex justify-between items-center shadow-sm w-full h-full min-h-0">
+                        <div class="font-bold text-sm md:text-base lg:text-xl text-black">SKINTIFIC</div>
+                        <div class="bg-blue-600 text-white text-center py-1 px-2 rounded-lg shrink-0">
+                            <div class="text-[7px] md:text-[9px] leading-none mb-0.5">SEMUA PRODUK</div>
+                            <div class="font-black text-sm md:text-lg">35%</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- NEXT SLOT 2: L'OREAL & GARNIER -->
-                <div id="right-brands-2" class="hidden flex-col gap-3 w-full h-full">
-                    <div class="bg-white border-2 border-blue-100 rounded-xl p-3 flex justify-between items-center shadow-sm flex-1">
-                        <div class="font-bold text-base md:text-lg lg:text-xl tracking-widest text-black">L'ORÉAL</div>
-                        <div class="bg-blue-600 text-white text-center py-1 px-2 md:px-4 rounded-lg">
-                            <div class="text-[8px] md:text-[10px] lg:text-xs">DISKON</div>
-                            <div class="font-black text-lg md:text-xl lg:text-2xl">35%</div>
+                <div id="right-brands-2" class="hidden flex-col gap-2 w-full h-full">
+                    <div class="bg-white border-2 border-blue-100 rounded-xl p-2 flex justify-between items-center shadow-sm flex-1 min-h-0">
+                        <div class="font-bold text-xs md:text-sm lg:text-lg tracking-widest text-black">L'ORÉAL</div>
+                        <div class="bg-blue-600 text-white text-center py-1 px-2 rounded-lg shrink-0">
+                            <div class="text-[7px] md:text-[9px] leading-none">DISKON</div>
+                            <div class="font-black text-sm md:text-lg">35%</div>
                         </div>
                     </div>
-                    <div class="bg-white border-2 border-blue-100 rounded-xl p-3 flex justify-between items-center shadow-sm flex-1">
-                        <div class="font-bold text-base md:text-lg lg:text-2xl text-green-600">GARNIER</div>
-                        <div class="bg-blue-600 text-white text-center py-1 px-2 md:px-4 rounded-lg">
-                            <div class="text-[8px] md:text-[10px] lg:text-xs">DISKON</div>
-                            <div class="font-black text-lg md:text-xl lg:text-2xl">35%</div>
+                    <div class="bg-white border-2 border-blue-100 rounded-xl p-2 flex justify-between items-center shadow-sm flex-1 min-h-0">
+                        <div class="font-bold text-xs md:text-sm lg:text-lg text-green-600">GARNIER</div>
+                        <div class="bg-blue-600 text-white text-center py-1 px-2 rounded-lg shrink-0">
+                            <div class="text-[7px] md:text-[9px] leading-none">DISKON</div>
+                            <div class="font-black text-sm md:text-lg">35%</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- NEXT SLOT 3: MAYBELLINE & GLAD2GLOW -->
-                <div id="right-brands-3" class="hidden flex-col gap-3 w-full h-full">
-                    <div class="bg-white border-2 border-blue-100 rounded-xl p-3 flex justify-between items-center shadow-sm flex-1">
-                        <div class="font-bold text-xs md:text-sm lg:text-xl tracking-widest text-black leading-tight">MAYBELLINE<br><span class="text-[8px] md:text-[10px] lg:text-xs font-normal text-gray-500">NEW YORK</span></div>
-                        <div class="bg-blue-600 text-white text-center py-1 px-2 md:px-4 rounded-lg">
-                            <div class="text-[8px] md:text-[10px] lg:text-xs">DISKON</div>
-                            <div class="font-black text-lg md:text-xl lg:text-2xl">35%</div>
+                <div id="right-brands-3" class="hidden flex-col gap-2 w-full h-full">
+                    <div class="bg-white border-2 border-blue-100 rounded-xl p-2 flex justify-between items-center shadow-sm flex-1 min-h-0">
+                        <div class="font-bold text-[10px] md:text-xs lg:text-base tracking-widest text-black leading-tight">MAYBELLINE<br><span class="text-[7px] md:text-[8px] font-normal text-gray-500">NEW YORK</span></div>
+                        <div class="bg-blue-600 text-white text-center py-1 px-2 rounded-lg shrink-0">
+                            <div class="text-[7px] md:text-[9px] leading-none">DISKON</div>
+                            <div class="font-black text-sm md:text-lg">35%</div>
                         </div>
                     </div>
-                    <div class="bg-white border-2 border-blue-100 rounded-xl p-3 flex justify-between items-center shadow-sm flex-1">
-                        <div class="font-bold text-base md:text-lg lg:text-2xl text-purple-600">Glad2Glow</div>
-                        <div class="bg-blue-600 text-white text-center py-1 px-2 md:px-4 rounded-lg">
-                            <div class="text-[8px] md:text-[10px] lg:text-xs">DISKON</div>
-                            <div class="font-black text-lg md:text-xl lg:text-2xl">35%</div>
+                    <div class="bg-white border-2 border-blue-100 rounded-xl p-2 flex justify-between items-center shadow-sm flex-1 min-h-0">
+                        <div class="font-bold text-xs md:text-sm lg:text-lg text-purple-600">Glad2Glow</div>
+                        <div class="bg-blue-600 text-white text-center py-1 px-2 rounded-lg shrink-0">
+                            <div class="text-[7px] md:text-[9px] leading-none">DISKON</div>
+                            <div class="font-black text-sm md:text-lg">35%</div>
                         </div>
                     </div>
                 </div>
 
             </div>
             
-            <div class="text-center text-blue-600 font-bold text-[10px] md:text-xs lg:text-sm mt-3 shrink-0">
+            <div class="text-center text-blue-600 font-bold text-[8px] md:text-[10px] lg:text-xs mt-2 shrink-0">
                 ⚡ Siapkan keranjangmu sekarang!
             </div>
         </div>
     </main>
 
     <!-- BOTTOM TIMELINE -->
-    <footer class="mt-4 mb-2 px-2 md:px-10 shrink-0">
-        <div class="bg-blue-50/90 backdrop-blur rounded-2xl p-3 md:p-4 flex flex-row items-center gap-2 md:gap-4 relative shadow-lg">
+    <footer class="mt-3 mb-1 px-2 md:px-6 shrink-0">
+        <div class="bg-blue-50/90 backdrop-blur rounded-xl md:rounded-2xl p-2 flex flex-row items-center gap-2 relative shadow-lg">
             
             <!-- Label -->
-            <div class="hidden md:block absolute -top-3 left-6 bg-blue-600 text-white font-bold px-6 py-1 rounded-full text-xs shadow-md">
+            <div class="absolute -top-2 left-6 bg-blue-600 text-white font-bold px-3 py-0.5 rounded-full text-[8px] md:text-[10px] shadow-md z-10">
                 📅 JADWAL HARI INI
             </div>
 
             <!-- Step 1 -->
-            <div id="timeline-step-1" class="flex-1 bg-white rounded-xl p-2 md:p-3 flex items-center justify-between shadow-sm transition-all duration-500">
-                <div id="timeline-badge-1" class="hidden absolute -top-3 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-[8px] md:text-[10px] font-bold px-2 py-1 rounded-full whitespace-nowrap shadow-md"></div>
-                <div class="flex items-center gap-1 md:gap-3">
-                    <div id="timeline-circle-1" class="bg-blue-600 text-white w-5 h-5 md:w-8 md:h-8 rounded-full flex items-center justify-center font-bold text-xs md:text-base transition-colors">1</div>
-                    <div class="hidden sm:block">
-                        <div class="text-blue-800 font-bold text-[10px] md:text-sm">🕒 10:00 - 12:00</div>
-                        <div class="font-black text-xs md:text-lg mt-0.5 text-black leading-tight">SKINTIFIC</div>
+            <div id="timeline-step-1" class="flex-1 bg-white rounded-lg md:rounded-xl p-1.5 md:p-2.5 flex items-center justify-between shadow-sm transition-all duration-500">
+                <div id="timeline-badge-1" class="hidden absolute -top-2 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-[7px] md:text-[9px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shadow-md z-10"></div>
+                <div class="flex items-center gap-1.5">
+                    <div id="timeline-circle-1" class="bg-blue-600 text-white w-4 h-4 md:w-6 md:h-6 rounded-full flex items-center justify-center font-bold text-[9px] md:text-xs transition-colors shrink-0">1</div>
+                    <div>
+                        <div class="text-blue-800 font-bold text-[8px] md:text-[10px] leading-none">🕒 10:00 - 12:00</div>
+                        <div class="font-black text-[9px] md:text-sm mt-0.5 text-black leading-none">SKINTIFIC</div>
                     </div>
                 </div>
-                <div class="text-center">
-                    <div class="text-[8px] md:text-xs text-blue-600 font-bold">DISKON</div>
-                    <div class="text-sm md:text-2xl font-black text-blue-600 leading-tight">35%</div>
-                    <div class="hidden sm:block text-[8px] md:text-[10px] text-gray-500 uppercase leading-none mt-1">Semua Produk</div>
+                <div class="text-center shrink-0">
+                    <div class="text-[7px] md:text-[9px] text-blue-600 font-bold leading-none">DISKON</div>
+                    <div class="text-xs md:text-lg font-black text-blue-600 leading-tight">35%</div>
                 </div>
             </div>
 
-            <div class="text-blue-400 font-bold text-sm md:text-xl hidden sm:block">••••</div>
+            <div class="text-blue-400 font-bold text-xs md:text-sm opacity-50">••</div>
 
             <!-- Step 2 -->
-            <div id="timeline-step-2" class="flex-1 bg-white rounded-xl p-2 md:p-3 flex items-center justify-between shadow-sm relative transition-all duration-500">
-                <div id="timeline-badge-2" class="hidden absolute -top-3 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-[8px] md:text-[10px] font-bold px-2 py-1 rounded-full whitespace-nowrap shadow-md"></div>
-                <div class="flex items-center gap-1 md:gap-3">
-                    <div id="timeline-circle-2" class="bg-blue-600 text-white w-5 h-5 md:w-8 md:h-8 rounded-full flex items-center justify-center font-bold text-xs md:text-base transition-colors">2</div>
-                    <div class="hidden sm:block">
-                        <div class="text-blue-800 font-bold text-[10px] md:text-sm">🕒 15:00 - 17:00</div>
-                        <div class="font-black text-[10px] md:text-sm mt-0.5 text-black leading-tight">L'ORÉAL & GARNIER</div>
+            <div id="timeline-step-2" class="flex-1 bg-white rounded-lg md:rounded-xl p-1.5 md:p-2.5 flex items-center justify-between shadow-sm relative transition-all duration-500">
+                <div id="timeline-badge-2" class="hidden absolute -top-2 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-[7px] md:text-[9px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shadow-md z-10"></div>
+                <div class="flex items-center gap-1.5">
+                    <div id="timeline-circle-2" class="bg-blue-600 text-white w-4 h-4 md:w-6 md:h-6 rounded-full flex items-center justify-center font-bold text-[9px] md:text-xs transition-colors shrink-0">2</div>
+                    <div>
+                        <div class="text-blue-800 font-bold text-[8px] md:text-[10px] leading-none">🕒 15:00 - 17:00</div>
+                        <div class="font-black text-[8px] md:text-xs mt-0.5 text-black leading-none">L'ORÉAL & GARNIER</div>
                     </div>
                 </div>
-                <div class="text-center">
-                    <div class="text-[8px] md:text-xs text-blue-600 font-bold">DISKON</div>
-                    <div class="text-sm md:text-2xl font-black text-blue-600 leading-tight">35%</div>
+                <div class="text-center shrink-0">
+                    <div class="text-[7px] md:text-[9px] text-blue-600 font-bold leading-none">DISKON</div>
+                    <div class="text-xs md:text-lg font-black text-blue-600 leading-tight">35%</div>
                 </div>
             </div>
 
-            <div class="text-blue-400 font-bold text-sm md:text-xl hidden sm:block">••••</div>
+            <div class="text-blue-400 font-bold text-xs md:text-sm opacity-50">••</div>
 
             <!-- Step 3 -->
-            <div id="timeline-step-3" class="flex-1 bg-white rounded-xl p-2 md:p-3 flex items-center justify-between shadow-sm relative transition-all duration-500">
-                <div id="timeline-badge-3" class="hidden absolute -top-3 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-[8px] md:text-[10px] font-bold px-2 py-1 rounded-full whitespace-nowrap shadow-md"></div>
-                <div class="flex items-center gap-1 md:gap-3">
-                    <div id="timeline-circle-3" class="bg-blue-600 text-white w-5 h-5 md:w-8 md:h-8 rounded-full flex items-center justify-center font-bold text-xs md:text-base transition-colors">3</div>
-                    <div class="hidden sm:block">
-                        <div class="text-blue-800 font-bold text-[10px] md:text-sm">🕒 19:00 - 21:00</div>
-                        <div class="font-black text-[10px] md:text-sm mt-0.5 text-black leading-tight">MAYBELLINE<br><span class="text-purple-500">Glad2Glow</span></div>
+            <div id="timeline-step-3" class="flex-1 bg-white rounded-lg md:rounded-xl p-1.5 md:p-2.5 flex items-center justify-between shadow-sm relative transition-all duration-500">
+                <div id="timeline-badge-3" class="hidden absolute -top-2 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-[7px] md:text-[9px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shadow-md z-10"></div>
+                <div class="flex items-center gap-1.5">
+                    <div id="timeline-circle-3" class="bg-blue-600 text-white w-4 h-4 md:w-6 md:h-6 rounded-full flex items-center justify-center font-bold text-[9px] md:text-xs transition-colors shrink-0">3</div>
+                    <div>
+                        <div class="text-blue-800 font-bold text-[8px] md:text-[10px] leading-none">🕒 19:00 - 21:00</div>
+                        <div class="font-black text-[8px] md:text-xs mt-0.5 text-black leading-none">MAYBELLINE<br><span class="text-purple-500">Glad2Glow</span></div>
                     </div>
                 </div>
-                <div class="text-center">
-                    <div class="text-[8px] md:text-xs text-blue-600 font-bold">DISKON</div>
-                    <div class="text-sm md:text-2xl font-black text-blue-600 leading-tight">35%</div>
+                <div class="text-center shrink-0">
+                    <div class="text-[7px] md:text-[9px] text-blue-600 font-bold leading-none">DISKON</div>
+                    <div class="text-xs md:text-lg font-black text-blue-600 leading-tight">35%</div>
                 </div>
             </div>
             
@@ -250,39 +251,35 @@
 
             // --- LOGIKA PENENTUAN WAKTU & SLOT ---
             if (hour < 12) { 
-                // Antara 00:00 s.d 11:59 -> Fokus ke Slot 1
                 activeSlot = 1; nextSlot = 2;
                 if (hour < schedule[1].start) {
                     isWaitingForStart = true;
-                    targetTime.setHours(schedule[1].start, 0, 0, 0); // Menuju jam 10
+                    targetTime.setHours(schedule[1].start, 0, 0, 0); 
                 } else {
-                    targetTime.setHours(schedule[1].end, 0, 0, 0); // Menuju jam 12
+                    targetTime.setHours(schedule[1].end, 0, 0, 0); 
                 }
             } else if (hour >= 12 && hour < 17) {
-                // Antara 12:00 s.d 16:59 -> Fokus ke Slot 2
                 activeSlot = 2; nextSlot = 3;
                 if (hour < schedule[2].start) {
                     isWaitingForStart = true;
-                    targetTime.setHours(schedule[2].start, 0, 0, 0); // Menuju jam 15
+                    targetTime.setHours(schedule[2].start, 0, 0, 0); 
                 } else {
-                    targetTime.setHours(schedule[2].end, 0, 0, 0); // Menuju jam 17
+                    targetTime.setHours(schedule[2].end, 0, 0, 0); 
                 }
             } else {
-                // Lewat dari jam 17:00 
                 if (hour < 21) {
                     activeSlot = 3; nextSlot = 1;
                     if (hour < schedule[3].start) {
                         isWaitingForStart = true;
-                        targetTime.setHours(schedule[3].start, 0, 0, 0); // Menuju jam 19
+                        targetTime.setHours(schedule[3].start, 0, 0, 0); 
                     } else {
-                        targetTime.setHours(schedule[3].end, 0, 0, 0); // Menuju jam 21
+                        targetTime.setHours(schedule[3].end, 0, 0, 0); 
                     }
                 } else {
-                    // Jika sudah lewat jam 21:00, tunggu slot 1 besok hari
                     activeSlot = 1; nextSlot = 2;
                     isWaitingForStart = true;
                     targetTime.setDate(targetTime.getDate() + 1);
-                    targetTime.setHours(schedule[1].start, 0, 0, 0); // Menuju jam 10 besok
+                    targetTime.setHours(schedule[1].start, 0, 0, 0); 
                 }
             }
 
@@ -294,20 +291,18 @@
                 document.getElementById('right-brands-' + i).classList.add('hidden');
             }
             
-            // Atur kembali kelas display (agar flexbox tetap jalan)
             document.getElementById('left-brands-' + activeSlot).classList.remove('hidden');
             document.getElementById('left-brands-' + activeSlot).classList.add('flex');
             
             document.getElementById('right-brands-' + nextSlot).classList.remove('hidden');
             if(nextSlot === 1) {
-                document.getElementById('right-brands-' + nextSlot).classList.add('block');
+                document.getElementById('right-brands-' + nextSlot).classList.add('block'); // Skintific block
             } else {
-                document.getElementById('right-brands-' + nextSlot).classList.add('flex');
+                document.getElementById('right-brands-' + nextSlot).classList.add('flex'); // Multi brand flex
             }
             
             document.getElementById('left-time').innerText = schedule[activeSlot].timeStr;
             document.getElementById('right-time').innerText = schedule[nextSlot].timeStr;
-
 
             // --- 2. UPDATE COUNTDOWN TIMER ---
             let diff = targetTime - now;
@@ -321,16 +316,15 @@
             document.getElementById('minutes').innerText = minutesRemaining.toString().padStart(2, '0');
             document.getElementById('seconds').innerText = secondsRemaining.toString().padStart(2, '0');
 
-            // --- 3. UPDATE TEMA & WARNA (BERLANGSUNG VS SEGERA MULAI) ---
+            // --- 3. UPDATE TEMA & WARNA ---
             const badgeLabel = document.getElementById('left-panel-badge');
             const timerLabel = document.getElementById('timer-label');
             const leftPanelBg = document.getElementById('left-panel-bg');
             const countdownContainer = document.getElementById('countdown-container');
             
             if (isWaitingForStart) {
-                // TEMA BIRU (Menunggu / Segera Mulai)
                 badgeLabel.innerText = "⏳ SEGERA MULAI";
-                badgeLabel.className = "absolute -top-4 left-6 bg-blue-600 text-white border-2 border-white font-bold px-4 py-1 rounded-full text-xs md:text-sm lg:text-lg shadow-lg transition-colors";
+                badgeLabel.className = "absolute -top-3 left-6 bg-blue-600 text-white border-2 border-white font-bold px-3 py-1 rounded-full text-[10px] md:text-sm lg:text-base shadow-lg transition-colors z-10";
                 timerLabel.innerText = "Promo Dimulai Dalam:";
                 
                 leftPanelBg.classList.replace('from-red-500', 'from-blue-500');
@@ -342,9 +336,8 @@
                 countdownContainer.classList.replace('to-yellow-500', 'to-blue-100');
                 countdownContainer.classList.replace('text-red-700', 'text-blue-800');
             } else {
-                // TEMA MERAH/KUNING (Sedang Berlangsung - Default)
                 badgeLabel.innerText = "⚡ SEDANG BERLANGSUNG";
-                badgeLabel.className = "absolute -top-4 left-6 bg-yellow-400 text-red-700 border-2 border-transparent font-bold px-4 py-1 rounded-full text-xs md:text-sm lg:text-lg shadow-lg transition-colors";
+                badgeLabel.className = "absolute -top-3 left-6 bg-yellow-400 text-red-700 border-2 border-transparent font-bold px-3 py-1 rounded-full text-[10px] md:text-sm lg:text-base shadow-lg transition-colors z-10";
                 timerLabel.innerText = "Promo Berakhir Dalam:";
                 
                 leftPanelBg.classList.replace('from-blue-500', 'from-red-500');
@@ -363,13 +356,12 @@
                 const badgeEl = document.getElementById('timeline-badge-' + i);
                 const circleEl = document.getElementById('timeline-circle-' + i);
 
-                stepEl.className = "flex-1 bg-white rounded-xl p-2 md:p-3 flex items-center justify-between shadow-sm relative transition-all duration-500";
-                badgeEl.className = "hidden absolute -top-3 left-1/2 transform -translate-x-1/2 text-[8px] md:text-[10px] font-bold px-2 py-1 rounded-full whitespace-nowrap shadow-md text-white";
-                circleEl.className = "text-white w-5 h-5 md:w-8 md:h-8 rounded-full flex items-center justify-center font-bold text-xs md:text-base transition-colors bg-gray-300";
+                stepEl.className = "flex-1 bg-white rounded-lg md:rounded-xl p-1.5 md:p-2.5 flex items-center justify-between shadow-sm relative transition-all duration-500";
+                badgeEl.className = "hidden absolute -top-2 left-1/2 transform -translate-x-1/2 text-[7px] md:text-[9px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shadow-md text-white z-10";
+                circleEl.className = "text-white w-4 h-4 md:w-6 md:h-6 rounded-full flex items-center justify-center font-bold text-[9px] md:text-xs transition-colors bg-gray-300 shrink-0";
 
                 if (i === activeSlot && hour < 21) {
-                    // State: FOKUS (Aktif atau Segera Mulai di hari yang sama)
-                    stepEl.classList.add('border-2', isWaitingForStart ? 'border-blue-500' : 'border-red-500', 'shadow-[0_0_10px_rgba(255,0,0,0.2)]', 'scale-[1.02]', 'z-10');
+                    stepEl.classList.add('border-2', isWaitingForStart ? 'border-blue-500' : 'border-red-500', 'shadow-[0_0_10px_rgba(255,0,0,0.2)]', 'scale-[1.02]', 'z-20');
                     badgeEl.classList.remove('hidden');
                     
                     if(isWaitingForStart) {
@@ -378,26 +370,23 @@
                         circleEl.classList.replace('bg-gray-300', 'bg-blue-500');
                     } else {
                         badgeEl.classList.add('bg-red-500');
-                        badgeEl.innerText = "⚡ SEDANG BERLANGSUNG";
+                        badgeEl.innerText = "⚡ AKTIF";
                         circleEl.classList.replace('bg-gray-300', 'bg-red-500');
                     }
                 } else if (i < activeSlot || (hour >= 21)) {
-                    // State: SUDAH BERLALU 
                     stepEl.classList.add('opacity-60', 'bg-gray-100');
                     badgeEl.classList.add('hidden');
                 } else {
-                    // State: AKAN DATANG
                     circleEl.classList.replace('bg-gray-300', 'bg-blue-600');
-                    badgeEl.className = "absolute -top-3 right-2 bg-blue-600 text-white text-[8px] md:text-[10px] font-bold px-2 py-1 rounded-full shadow-md hidden sm:block";
+                    badgeEl.className = "absolute -top-2 right-1 md:right-2 bg-blue-600 text-white text-[7px] md:text-[9px] font-bold px-2 py-0.5 rounded-full shadow-md z-10";
                     badgeEl.innerText = "AKAN DATANG";
                     badgeEl.classList.remove('hidden');
                 }
             }
         }
 
-        // Jalankan setiap 1 detik
         setInterval(updateDisplay, 1000);
-        updateDisplay(); // Panggil segera saat load
+        updateDisplay(); 
     </script>
 </body>
 </html>
