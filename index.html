@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b84ff" />
+    <title>Flash Sale Hari Ini</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="screen-shell">
+      <section class="hero-bg" aria-label="Display jadwal flash sale">
+        <div class="blob blob-one"></div>
+        <div class="blob blob-two"></div>
+        <div class="blob blob-three"></div>
+
+        <header class="topbar">
+          <div class="brand-lockup">
+            <div class="app-icon" aria-hidden="true">
+              <svg viewBox="0 0 80 80" role="img">
+                <rect width="80" height="80" rx="22" fill="url(#iconBg)" />
+                <path d="M25 34h30l-3.4 26H28.4L25 34Z" fill="#fff" />
+                <path d="M31 34c0-8 4-13 9-13s9 5 9 13" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" />
+                <path d="M43 28 27 49h13l-4 20 17-25H41l2-16Z" fill="#ffd028" stroke="#ff4b8b" stroke-width="2" stroke-linejoin="round" />
+                <defs>
+                  <linearGradient id="iconBg" x1="0" x2="1" y1="0" y2="1">
+                    <stop stop-color="#ff4b9c" />
+                    <stop offset="1" stop-color="#ff7ac8" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div>
+              <p class="eyebrow">DISPLAY TOKO</p>
+              <h1>FLASH SALE <span>HARI INI</span></h1>
+            </div>
+          </div>
+          <div class="live-clock">
+            <span id="currentDay">Hari ini</span>
+            <strong id="currentTime">00:00:00</strong>
+          </div>
+        </header>
+
+        <section class="main-grid">
+          <article class="active-card" id="activeCard">
+            <div class="card-header">
+              <span class="status-pill" id="activeStatus">SEDANG BERLANGSUNG</span>
+              <span class="limited-pill">WAKTU TERBATAS</span>
+            </div>
+
+            <div class="active-content">
+              <div class="active-left">
+                <p class="section-label">Flash sale aktif</p>
+                <h2 id="activeTimeRange">--:-- - --:--</h2>
+                <p class="urgency" id="activeUrgency">Belanja sekarang sebelum waktunya habis!</p>
+                <div class="cta-row">
+                  <span class="cart-badge">🛒</span>
+                  <span>BELANJA SEKARANG</span>
+                </div>
+              </div>
+
+              <div class="countdown-panel" aria-live="polite">
+                <p>Sisa waktu</p>
+                <div class="countdown" id="countdown">
+                  <div><strong id="hours">00</strong><span>Jam</span></div>
+                  <div><strong id="minutes">00</strong><span>Menit</span></div>
+                  <div><strong id="seconds">00</strong><span>Detik</span></div>
+                </div>
+                <small id="countdownNote">Promo berakhir sebentar lagi.</small>
+              </div>
+            </div>
+
+            <div class="brand-discount-grid" id="activeBrands"></div>
+          </article>
+
+          <aside class="coming-card">
+            <div class="coming-header">
+              <span>⏰</span>
+              <strong>COMING SOON</strong>
+            </div>
+            <div id="comingSoonContent" class="coming-content"></div>
+          </aside>
+        </section>
+
+        <section class="schedule-section">
+          <div class="schedule-title">
+            <span>📅</span>
+            <strong>JADWAL HARI INI</strong>
+          </div>
+          <div class="schedule-grid" id="scheduleGrid"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
