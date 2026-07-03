@@ -210,11 +210,6 @@
             </div>
         </main>
 
-        <footer class="mt-4 mb-2 px-2 md:px-10 shrink-0">
-            <div id="timeline-container" class="bg-blue-50/90 backdrop-blur rounded-2xl p-3 md:p-4 flex flex-row items-center gap-2 md:gap-4 relative shadow-lg">
-                <div class="hidden md:block absolute -top-3 left-6 bg-blue-600 text-white font-bold px-6 py-1 rounded-full text-xs shadow-md z-20">📅 JADWAL HARI INI</div>
-            </div>
-        </footer>
     </div>
 
 
@@ -584,7 +579,7 @@
                 document.getElementById('right-brands-container').innerHTML = '<div class="text-center font-bold text-gray-500 w-full h-full flex items-center justify-center">Tidak ada jadwal selanjutnya</div>';
             }
 
-            renderTimeline(slotsArray, activeSlotIndex, currentHourMin, isWaitingForStart);
+            // Timeline bawah dihapus agar area promo TV lebih luas.
         }
 
         function renderEmptyDisplay() {
@@ -592,7 +587,6 @@
             document.getElementById('badge-time-label').innerText = "🕒 WAKTU TERBATAS";
             document.getElementById('left-brands-container').innerHTML = `<div class="bg-white/20 p-6 rounded-xl border border-white/40 w-full h-full flex items-center justify-center font-bold text-xl text-center">Belum ada jadwal hari ini.<br><span class="text-sm font-normal mt-2 block">Tambahkan via Panel Admin</span></div>`;
             document.getElementById('right-brands-container').innerHTML = '';
-            document.getElementById('timeline-container').innerHTML = '<div class="text-center w-full text-blue-800 font-bold py-2">Menunggu jadwal dari Google Sheets...</div>';
             document.getElementById('countdown-container').classList.add('hidden');
         }
 
@@ -636,6 +630,7 @@
 
         function renderTimeline(slotsArray, activeIndex, currentHourMin, isWaitingForStart) {
             const container = document.getElementById('timeline-container');
+            if (!container) return;
             Array.from(container.children).forEach(child => { if(!child.classList.contains('absolute')) container.removeChild(child); });
 
             let displaySlots = slotsArray.slice(0, 3); 
