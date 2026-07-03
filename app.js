@@ -1,188 +1,154 @@
 const schedule = [
   {
-    id: 1,
+    time: "10:00 - 12:00",
     start: "10:00",
     end: "12:00",
-    brands: [{ name: "Skintific", discount: "35%", note: "Semua Produk" }],
+    brands: ["SKINTIFIC"],
+    discount: "35%",
+    note: "SEMUA PRODUK"
   },
   {
-    id: 2,
+    time: "15:00 - 17:00",
     start: "15:00",
     end: "17:00",
-    brands: [
-      { name: "Loreal", discount: "35%" },
-      { name: "Garnier", discount: "35%" },
-    ],
+    brands: ["L'ORÉAL", "GARNIER"],
+    discount: "35%",
+    note: ""
   },
   {
-    id: 3,
+    time: "19:00 - 21:00",
     start: "19:00",
     end: "21:00",
-    brands: [
-      { name: "Maybelline", discount: "35%" },
-      { name: "Glad2 Glow", discount: "35%" },
-    ],
-  },
+    brands: ["MAYBELLINE NEW YORK", "Glad2Glow"],
+    discount: "35%",
+    note: ""
+  }
 ];
 
-const currentDayEl = document.getElementById("currentDay");
-const currentTimeEl = document.getElementById("currentTime");
-const activeCardEl = document.getElementById("activeCard");
-const activeStatusEl = document.getElementById("activeStatus");
-const activeTimeRangeEl = document.getElementById("activeTimeRange");
-const activeUrgencyEl = document.getElementById("activeUrgency");
-const activeBrandsEl = document.getElementById("activeBrands");
-const countdownNoteEl = document.getElementById("countdownNote");
-const comingSoonContentEl = document.getElementById("comingSoonContent");
-const scheduleGridEl = document.getElementById("scheduleGrid");
-const hoursEl = document.getElementById("hours");
-const minutesEl = document.getElementById("minutes");
-const secondsEl = document.getElementById("seconds");
+const byId = (id) => document.getElementById(id);
 
-function parseTimeToDate(time, baseDate = new Date()) {
-  const [hours, minutes] = time.split(":").map(Number);
-  const date = new Date(baseDate);
-  date.setHours(hours, minutes, 0, 0);
-  return date;
+function brandClass(name) {
+  const normalized = name.toLowerCase();
+  if (normalized.includes("garnier")) return "garnier";
+  if (normalized.includes("maybelline")) return "maybelline";
+  if (normalized.includes("glad")) return "glad2glow";
+  if (normalized.includes("skintific")) return "skintific";
+  return "loreal";
 }
 
-function formatClock(date) {
-  return new Intl.DateTimeFormat("id-ID", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  }).format(date);
+function brandMarkup(name) {
+  return `<div class="wordmark ${brandClass(name)}">${name}</div>`;
 }
 
-function formatDay(date) {
-  return new Intl.DateTimeFormat("id-ID", {
-    weekday: "long",
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  }).format(date);
-}
-
-function formatDuration(ms) {
-  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  return {
-    hours: String(hours).padStart(2, "0"),
-    minutes: String(minutes).padStart(2, "0"),
-    seconds: String(seconds).padStart(2, "0"),
-  };
-}
-
-function getSlotState(slot, now) {
-  const start = parseTimeToDate(slot.start, now);
-  const end = parseTimeToDate(slot.end, now);
-
-  if (now >= start && now < end) return "active";
-  if (now >= end) return "past";
-  return "upcoming";
-}
-
-function getActiveSlot(now) {
-  return schedule.find((slot) => getSlotState(slot, now) === "active") || null;
-}
-
-function getNextSlot(now) {
-  const upcoming = schedule.find((slot) => getSlotState(slot, now) === "upcoming");
-  return upcoming || schedule[0];
-}
-
-function createBrandTile(brand) {
+function discountMarkup(discount) {
   return `
-    <div class="brand-tile">
-      <div class="brand-name">${brand.name}</div>
-      <div class="discount-badge">
-        <small>DISKON</small>
-        <strong>${brand.discount}</strong>
-        ${brand.note ? `<small>${brand.note}</small>` : ""}
-      </div>
+    <div class="discount-block">
+      <span>DISKON</span>
+      <strong>${discount.replace("%", "<small>%</small>")}</strong>
     </div>
   `;
 }
 
-function renderActive(now) {
-  const activeSlot = getActiveSlot(now);
-  const slot = activeSlot || getNextSlot(now);
-  const targetTime = activeSlot ? parseTimeToDate(slot.end, now) : parseTimeToDate(slot.start, now);
-  const remaining = formatDuration(targetTime - now);
-
-  hoursEl.textContent = remaining.hours;
-  minutesEl.textContent = remaining.minutes;
-  secondsEl.textContent = remaining.seconds;
-
-  activeTimeRangeEl.textContent = `${slot.start} - ${slot.end}`;
-  activeBrandsEl.innerHTML = slot.brands.map(createBrandTile).join("");
-
-  if (activeSlot) {
-    activeCardEl.classList.remove("no-active");
-    activeStatusEl.textContent = "SEDANG BERLANGSUNG";
-    activeUrgencyEl.textContent = "Jangan sampai kelewatan! Belanja sekarang sebelum waktunya habis.";
-    countdownNoteEl.textContent = `Promo berakhir pukul ${slot.end}. Ambil produknya sekarang.`;
-  } else {
-    activeCardEl.classList.add("no-active");
-    activeStatusEl.textContent = "SEGERA MULAI";
-    activeUrgencyEl.textContent = "Siapkan keranjangmu. Flash sale berikutnya segera dimulai.";
-    countdownNoteEl.textContent = `Flash sale berikutnya mulai pukul ${slot.start}.`;
-  }
+function timeToDate(time, base = new Date()) {
+  const [hours, minutes] = time.split(":").map(Number);
+  const date = new Date(base);
+  date.setHours(hours, minutes, 0, 0);
+  return date;
 }
 
-function renderComingSoon(now) {
-  const activeSlot = getActiveSlot(now);
-  let comingSlot = null;
+function getStatus(item, now) {
+  const start = timeToDate(item.start, now);
+  const end = timeToDate(item.end, now);
+  if (now >= start && now < end) return "active";
+  if (now < start) return "upcoming";
+  return "ended";
+}
 
-  if (activeSlot) {
-    comingSlot = schedule.find((slot) => parseTimeToDate(slot.start, now) > now) || schedule[0];
-  } else {
-    comingSlot = getNextSlot(now);
-  }
+function getDisplayItems(now) {
+  const enriched = schedule.map((item) => ({
+    ...item,
+    status: getStatus(item, now),
+    startDate: timeToDate(item.start, now),
+    endDate: timeToDate(item.end, now)
+  }));
 
-  const comingTime = `${comingSlot.start} - ${comingSlot.end}`;
-  const comingItems = comingSlot.brands
-    .map(
-      (brand) => `
-        <div class="coming-item">
-          <strong>${brand.name}</strong>
-          <span>${brand.discount}</span>
-        </div>
-      `
-    )
+  const active = enriched.find((item) => item.status === "active");
+  const nextToday = enriched.find((item) => item.status === "upcoming");
+  const fallback = { ...enriched[0] };
+  fallback.startDate = timeToDate(fallback.start, new Date(now.getTime() + 86400000));
+  fallback.endDate = timeToDate(fallback.end, new Date(now.getTime() + 86400000));
+  fallback.status = "upcoming";
+
+  return {
+    enriched,
+    active: active || nextToday || fallback,
+    next: active ? nextToday || fallback : nextToday || fallback,
+    hasActive: Boolean(active)
+  };
+}
+
+function formatDuration(ms) {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+  const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+  const seconds = String(totalSeconds % 60).padStart(2, "0");
+  return `${hours}:${minutes}:${seconds}`;
+}
+
+function renderActive(item, hasActive, now) {
+  byId("activeBadge").textContent = hasActive ? "Sedang Berlangsung" : "Akan Datang";
+  byId("activeTime").textContent = item.time;
+  byId("countdownLabel").textContent = hasActive ? "Berakhir dalam" : "Dimulai dalam";
+
+  const target = hasActive ? item.endDate : item.startDate;
+  byId("mainCountdown").textContent = formatDuration(target - now);
+
+  byId("activeBrands").innerHTML = item.brands
+    .map((brand) => `
+      <div class="deal-card">
+        ${brandMarkup(brand)}
+        ${discountMarkup(item.discount)}
+      </div>
+    `)
     .join("");
-
-  comingSoonContentEl.innerHTML = `
-    <div class="coming-time">${comingTime}</div>
-    <div class="coming-list">${comingItems}</div>
-    <p class="next-note">⚡ Siapkan keranjangmu dari sekarang.</p>
-  `;
 }
 
-function renderSchedule(now) {
-  scheduleGridEl.innerHTML = schedule
-    .map((slot) => {
-      const state = getSlotState(slot, now);
-      const statusLabel =
-        state === "active" ? "Sedang Berlangsung" : state === "past" ? "Selesai" : "Akan Datang";
-      const chips = slot.brands
-        .map(
-          (brand) => `<span class="brand-chip">${brand.name} <small>${brand.discount}${brand.note ? ` · ${brand.note}` : ""}</small></span>`
-        )
-        .join("");
+function renderComing(item) {
+  byId("nextTime").textContent = item.time;
+  byId("nextBrands").innerHTML = item.brands
+    .map((brand) => `
+      <div class="coming-row">
+        ${brandMarkup(brand)}
+        <div class="mini-discount"><span>DISKON</span>${item.discount}</div>
+      </div>
+    `)
+    .join("");
+}
+
+function renderSchedule(items) {
+  byId("scheduleList").innerHTML = items
+    .map((item, index) => {
+      const statusText = item.status === "active"
+        ? "⚡ Sedang Berlangsung"
+        : item.status === "upcoming"
+          ? "Akan Datang"
+          : "Selesai";
 
       return `
-        <article class="schedule-card ${state}">
-          <div class="schedule-meta">
-            <span class="slot-badge">${slot.id}</span>
-            <span class="slot-status">${statusLabel}</span>
+        <article class="schedule-item is-${item.status}">
+          <div class="schedule-status">${statusText}</div>
+          <div class="schedule-num">${index + 1}</div>
+          <div class="schedule-main">
+            <div class="schedule-time">◷ ${item.time}</div>
+            <div class="schedule-brands">
+              ${item.brands.map(brandMarkup).join("")}
+            </div>
           </div>
-          <h3 class="schedule-time">${slot.start} - ${slot.end}</h3>
-          <div class="schedule-brands">${chips}</div>
+          <div class="schedule-discount">
+            <span>DISKON</span>
+            ${item.discount}
+            ${item.note ? `<small>${item.note}</small>` : ""}
+          </div>
         </article>
       `;
     })
@@ -191,11 +157,10 @@ function renderSchedule(now) {
 
 function tick() {
   const now = new Date();
-  currentDayEl.textContent = formatDay(now);
-  currentTimeEl.textContent = formatClock(now);
-  renderActive(now);
-  renderComingSoon(now);
-  renderSchedule(now);
+  const { enriched, active, next, hasActive } = getDisplayItems(now);
+  renderActive(active, hasActive, now);
+  renderComing(next);
+  renderSchedule(enriched);
 }
 
 tick();

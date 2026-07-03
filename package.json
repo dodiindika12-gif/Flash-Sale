@@ -2,16 +2,8 @@
   "name": "flash-sale-tv-display",
   "version": "1.0.0",
   "private": true,
-  "description": "Aplikasi web display jadwal Flash Sale untuk TV toko.",
   "scripts": {
-    "dev": "npx serve .",
-    "start": "npx serve ."
-  },
-  "keywords": [
-    "flash-sale",
-    "digital-signage",
-    "retail-display"
-  ],
-  "author": "ABS Kendari",
-  "license": "MIT"
+    "start": "npx serve .",
+    "dev": "npx serve ."
+  }
 }
